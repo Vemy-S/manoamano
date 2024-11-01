@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+model User {
+  user_id   Int      @id @default(autoincrement())
+  fullname  String
+  email     String   @unique
+  password  String
+  phone     String
+  role      Role     @default(USER)
+  posts     Post[]
+  reviews   Review[]
+  favorites Post[]   @relation("UserFavorites")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Post {
+  post_id     Int       @id @default(autoincrement())
+  title       String
+  description String
+  type        PostType
+  status      PostStatus @default(OPEN)
+  userId      Int
+  user        User      @relation(fields: [userId], references: [user_id])
+  reviews     Review[]
+  favorites   User[]    @relation("UserFavorites")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  rating    Int
+  comment   String
+  userId    Int
+  user      User     @relation(fields: [userId], references: [user_id])
+  postId    Int
+  post      Post     @relation(fields: [postId], references: [post_id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum PostType {
+  OFFER
+  REQUEST
+}
+
+enum PostStatus {
+  OPEN
+  COMPLETED
+}
