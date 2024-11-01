@@ -1,7 +1,11 @@
 import { useState } from "react"
 import { login } from "../services/auth"
+import { useAuthStore } from "../zustand/useAuthStore"
+import { useRouter } from "expo-router"
 
 export const useLogin = () => {
+    const setUser = useAuthStore(state => state.setUser)
+    const router = useRouter()
 
     const [formValues, setFormValues] = useState({
         email: '',
@@ -15,8 +19,12 @@ export const useLogin = () => {
         }))
     }
 
-    const handleSubmit = () => {
-        login(formValues.email, formValues.password)
+    const handleSubmit = async () => {
+        const result = await login(formValues.email, formValues.password)
+        console.log('Probando el reuslt po', result)
+        setUser(result)
+        router.push('/feed')
+        
     }
 
     return {

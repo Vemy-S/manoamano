@@ -7,7 +7,7 @@ import { Link } from 'expo-router'
 
 const login = () => {
 
-  const {formValues, handleSubmit, handleInputChange} = useLogin()
+  const { formValues, handleSubmit, handleInputChange } = useLogin()
 
   return (
     <SafeAreaView className='flex-1'>
@@ -30,6 +30,9 @@ const login = () => {
 
       <Button title="Iniciar sesión" onPress={handleSubmit}/>
       <Link href="/register">Ir a registrarse</Link>
+      <Link href="/createPost">Ir a crear post</Link>
+      <Link href="/feed">Feed</Link>
+
       </View>
     </SafeAreaView>
   )

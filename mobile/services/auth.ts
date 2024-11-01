@@ -16,8 +16,8 @@ export const login = async (email: User['email'], password: User['password']) =>
     try {
         const url = `${process.env.API_BASE_URL}/auth/login`
         const result = await axios.post(url, {email, password})
-
         console.log(result)
+        return result.data
     } catch (error) {
         
     }

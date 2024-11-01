@@ -2,13 +2,16 @@ import { create } from "zustand";
 import type { User } from "../types";
 
 type useAuthStore = {
-    login: () => void
+    user: User
+    setUser: (user: User) => void
 }
 
 export const useAuthStore = create<useAuthStore>((set)=> ({
-    login: () => {
-        
-    }
-
-    
+    user: {
+        fullname: '',
+        email: '',
+        password: '',
+        phone: ''
+    },
+    setUser: (user) => set({user})
 }))
