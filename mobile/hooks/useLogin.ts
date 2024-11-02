@@ -5,6 +5,7 @@ import { useRouter } from "expo-router"
 
 export const useLogin = () => {
     const setUser = useAuthStore(state => state.setUser)
+
     const router = useRouter()
 
     const [formValues, setFormValues] = useState({
@@ -21,7 +22,7 @@ export const useLogin = () => {
 
     const handleSubmit = async () => {
         const result = await login(formValues.email, formValues.password)
-        console.log('Probando el reuslt po', result)
+        console.log('Probando el result po', result)
         setUser(result)
         router.push('/feed')
         

@@ -14,7 +14,6 @@ export default function register() {
         <Text>aca puede ir imagenes o algo, etc.</Text>
       <View className="flex-1 items-center bg-white p-4">
         <Text className="text-2xl font-bold mb-4">Registro</Text>
-  
         <TextInput
         className="border border-gray-300 rounded p-2 mb-4 w-full"
         placeholder="Nombre completo"

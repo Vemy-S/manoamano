@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import type { User } from "../types";
+import { useState } from "react";
 
 type useAuthStore = {
     user: User
@@ -15,3 +16,10 @@ export const useAuthStore = create<useAuthStore>((set)=> ({
     },
     setUser: (user) => set({user})
 }))
+
+
+
+
+
+
+

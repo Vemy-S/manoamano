@@ -5,12 +5,13 @@ import { useAuthStore } from '../zustand/useAuthStore'
 export default function CreatePost() {
   const [postType, setPostType] = useState('ofrece')
   const [description, setDescription] = useState('')
+
   const fullname = useAuthStore(state => state.user.fullname)
 
 
   const handleSubmit = () => {
     console.log('Submitting post:', { postType, description })
-    Alert.alert('Has publicado la guea')
+    Alert.alert('Has publicado')
   }
 
   return (
@@ -18,7 +19,6 @@ export default function CreatePost() {
       <View className="p-4">
         <View className="flex-row items-center mb-6">
           <Image
-           
             className="w-12 h-12 rounded-full mr-4"
           />
           <Text className="text-lg font-semibold">{fullname}</Text>

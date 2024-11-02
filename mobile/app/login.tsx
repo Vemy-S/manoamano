@@ -11,7 +11,7 @@ const login = () => {
 
   return (
     <SafeAreaView className='flex-1'>
-      <Text>Aca puede tener imagen o la guea k sea</Text>
+      <Text>Aca puede tener imagen</Text>
       <View className="flex-1 items-center bg-white p-4">
       <TextInput
         className="border border-gray-300 rounded p-2 mb-4 w-full"
@@ -32,6 +32,8 @@ const login = () => {
       <Link href="/register">Ir a registrarse</Link>
       <Link href="/createPost">Ir a crear post</Link>
       <Link href="/feed">Feed</Link>
+      <Link href="/reviews">reviews</Link>
+
 
       </View>
     </SafeAreaView>
@@ -39,3 +41,6 @@ const login = () => {
 }
 
 export default login
+
+
+
