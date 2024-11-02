@@ -49,10 +49,8 @@ export const login = async (req:Request, res:Response): Promise<void> => {
             where: {email}
         })
 
-        
-
         if(!user) {
-            res.status(400)
+            res.status(400).json({error: "User not found"})
             return
         }
 
@@ -67,6 +65,7 @@ export const login = async (req:Request, res:Response): Promise<void> => {
         res.cookie('token', token, { httpOnly: true })
 
         res.json({
+            user_id: user.user_id,
             fullname: user.fullname,
             phone: user.phone,
             email,
@@ -78,15 +77,3 @@ export const login = async (req:Request, res:Response): Promise<void> => {
         res.status(500).json({ error: "Internal server error" })     
     }
 }
-
-
-const listadecompras = {
-    producto1: "Lechuga",
-    producto2: "Sandia"
-}
-
-const producto = listadecompras.producto2
-listadecompras.producto1
-
-const {producto1, producto2} = listadecompras
-

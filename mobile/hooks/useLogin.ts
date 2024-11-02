@@ -24,7 +24,7 @@ export const useLogin = () => {
         const result = await login(formValues.email, formValues.password)
         console.log('Probando el result po', result)
         setUser(result)
-        router.push('/feed')
+        router.push('/createPost')
         
     }
 

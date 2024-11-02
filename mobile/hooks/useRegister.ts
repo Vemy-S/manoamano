@@ -18,8 +18,7 @@ export const useRegister = () => {
     }
 
     const handleSubmit =  () => {
-        console.log(formValues)
-        register(formValues)
+      register(formValues)
     }
 
     return {

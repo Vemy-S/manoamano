@@ -12,44 +12,87 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
 model User {
-  user_id   Int      @id @default(autoincrement())
-  fullname  String
-  email     String   @unique
-  password  String
-  phone     String
-  role      Role     @default(USER)
-  posts     Post[]
-  reviews   Review[]
-  favorites Post[]   @relation("UserFavorites")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  user_id          Int            @id @default(autoincrement())
+  fullname         String
+  email            String         @unique
+  password         String
+  phone            String
+  role             Role           @default(USER)
+  posts            Post[]
+  reviews          Review[]
+  favorites        Int[]
+  photo            String?
+  status           UserStatus     @default(ACTIVE)
+  notifications    Notification[]
+  postulations     Postulation[]
+  sentMessages     Message[]      @relation("SentMessages")
+  receivedMessages Message[]      @relation("ReceivedMessages")
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  lastLoginAt      DateTime?
 }
 
 model Post {
-  post_id     Int       @id @default(autoincrement())
-  title       String
-  description String
-  type        PostType
-  status      PostStatus @default(OPEN)
-  userId      Int
-  user        User      @relation(fields: [userId], references: [user_id])
-  reviews     Review[]
-  favorites   User[]    @relation("UserFavorites")
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  post_id         Int            @id @default(autoincrement())
+  title           String
+  description     String
+  type            PostType
+  status          PostStatus     @default(OPEN)
+  user_id         Int
+  user            User           @relation(fields: [user_id], references: [user_id])
+  reviews         Review[]
+  favorites       Int[]
+  postulations    Postulation[]
+  maxPostulations Int            @default(5)
+  tags            String[]
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
 }
 
 model Review {
-  id        Int      @id @default(autoincrement())
-  rating    Int
-  comment   String
-  userId    Int
-  user      User     @relation(fields: [userId], references: [user_id])
-  postId    Int
-  post      Post     @relation(fields: [postId], references: [post_id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  review_id   Int      @id @default(autoincrement())
+  rating      Int
+  comment     String
+  user_id      Int
+  user        User     @relation(fields: [user_id], references: [user_id])
+  post_id      Int
+  post        Post     @relation(fields: [post_id], references: [post_id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Notification {
+  notification_id Int      @id @default(autoincrement())
+  user_id          Int
+  user            User     @relation(fields: [user_id], references: [user_id])
+  message         String
+  postId          Int?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Postulation {
+  postulation_id  Int      @id @default(autoincrement())
+  user_id         Int
+  post_id         Int
+  status          PostulationStatus @default(PENDING)
+  user            User     @relation(fields: [user_id], references: [user_id])
+  post            Post     @relation(fields: [post_id], references: [post_id])
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Message {
+  message_id  Int      @id @default(autoincrement())
+  senderId    Int
+  receiverId  Int
+  content     String
+  sender      User     @relation("SentMessages", fields: [senderId], references: [user_id])
+  receiver    User     @relation("ReceivedMessages", fields: [receiverId], references: [user_id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 enum Role {
@@ -64,5 +107,19 @@ enum PostType {
 
 enum PostStatus {
   OPEN
+  COMPLETED
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  BANNED
+}
+
+enum PostulationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  IN_PROGRESS
   COMPLETED
 }

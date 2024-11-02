@@ -39,3 +39,5 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
         res.status(500).json({ error: "Internal server error" })
     }
 }
+
+

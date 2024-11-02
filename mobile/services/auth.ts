@@ -1,12 +1,12 @@
 import axios from 'axios'
-import { User } from '../types'
+import { DraftUser, User } from '../types'
 
-export const register = async (user: User) => {
+export const register = async (user: DraftUser) => {
     try {
         const url = `${process.env.API_BASE_URL}/auth/register` 
-        const result = await axios.post(url, user)
+        const response = await axios.post(url, user)
 
-        console.log(result)
+        console.log(response)
     } catch (error) {
         console.error(error)
     }
@@ -15,10 +15,12 @@ export const register = async (user: User) => {
 export const login = async (email: User['email'], password: User['password']) => {
     try {
         const url = `${process.env.API_BASE_URL}/auth/login`
-        const result = await axios.post(url, {email, password})
-        console.log(result)
+        const response = await axios.post(url, {email, password}, {
+            withCredentials: true
+        })
+        console.log(response)
         
-        return result.data
+        return response.data
     } catch (error) {
         
     }

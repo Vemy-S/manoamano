@@ -1,6 +1,6 @@
 import { CorsOptions } from "cors";
 
-const corsOptions: CorsOptions = {
+/* const corsOptions: CorsOptions = {
     origin: (origin, callback) => {
         console.log(origin)
         if(origin === process.env.FRONTEND_URL){
@@ -11,6 +11,11 @@ const corsOptions: CorsOptions = {
             callback(new Error('CORS'))
         }
     },
+    credentials: true
+} */
+
+const corsOptions = {
+    origin: 'http://localhost:8081', 
     credentials: true
 }
 

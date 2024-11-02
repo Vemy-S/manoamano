@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import type { User } from "../types";
-import { useState } from "react";
 
 type useAuthStore = {
     user: User
@@ -9,6 +8,7 @@ type useAuthStore = {
 
 export const useAuthStore = create<useAuthStore>((set)=> ({
     user: {
+        user_id: null,
         fullname: '',
         email: '',
         password: '',

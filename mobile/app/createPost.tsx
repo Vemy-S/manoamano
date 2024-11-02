@@ -1,18 +1,15 @@
+
 import React, { useState } from 'react'
 import { View, Text, TextInput, Image, Pressable, ScrollView, Switch, Alert } from 'react-native'
 import { useAuthStore } from '../zustand/useAuthStore'
+import { createPost } from '../services/posts'
+import { DraftPost } from '../types'
+import { usePost } from '../hooks/usePost'
 
 export default function CreatePost() {
-  const [postType, setPostType] = useState('ofrece')
-  const [description, setDescription] = useState('')
+  const user = useAuthStore(state => state.user)
 
-  const fullname = useAuthStore(state => state.user.fullname)
-
-
-  const handleSubmit = () => {
-    console.log('Submitting post:', { postType, description })
-    Alert.alert('Has publicado')
-  }
+  const  {handlePost, handleSubmit, postValues} = usePost()
 
   return (
     <ScrollView className="flex-1 bg-gray-100">
@@ -21,20 +18,30 @@ export default function CreatePost() {
           <Image
             className="w-12 h-12 rounded-full mr-4"
           />
-          <Text className="text-lg font-semibold">{fullname}</Text>
+          <Text className="text-lg font-semibold">{user.fullname}</Text>
         </View>
 
         <View className="flex-row justify-between items-center mb-6">
           <Text className="text-lg font-semibold">Tipo de Post:</Text>
           <View className="flex-row items-center">
-            <Text className={`mr-2 ${postType === 'ofrece' ? 'text-indigo-600' : 'text-gray-600'}`}>Ofrece</Text>
+            <Text className={`mr-2 ${postValues.type === 'OFFER' ? 'text-indigo-600' : 'text-gray-600'}`}>Requiero</Text>
             <Switch
-              value={postType === 'requiere'}
-              onValueChange={(value) => setPostType(value ? 'requiere' : 'ofrece')}
+              value={postValues.type === 'OFFER'}
+              onValueChange={value => handlePost('type', value ? 'OFFER' : 'REQUEST')}
               trackColor={{ false: '#3b82f6', true: '#374874' }}
             />
-            <Text className={`ml-2 ${postType === 'requiere' ? 'text-indigo-600' : 'text-gray-600'}`}>Requiere</Text>
+            <Text className={`ml-2 ${postValues.type === 'REQUEST' ? 'text-indigo-600' : 'text-gray-600'}`}>Ofrezco</Text>
           </View>
+        </View>
+
+        <View className="mb-6">
+          <Text className="text-lg font-semibold mb-2">Título:</Text>
+          <TextInput
+            className="bg-white border border-gray-300 rounded-lg p-2 text-base"
+            placeholder="Ingresa un título para tu post..."
+            value={postValues.title}
+            onChangeText={value => handlePost('title', value)}
+          />
         </View>
 
         <View className="mb-6">
@@ -44,8 +51,8 @@ export default function CreatePost() {
             multiline
             numberOfLines={4}
             placeholder="Describe el servicio que ofreces o requieres..."
-            value={description}
-            onChangeText={setDescription}
+            value={postValues.description}
+            onChangeText={value => handlePost('description', value)}
           />
         </View>
 
