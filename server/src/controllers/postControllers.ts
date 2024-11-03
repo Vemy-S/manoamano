@@ -27,4 +27,29 @@ export const createPost = async (req: customRequest, res: Response) => {
     } catch (error) {
         res.status(500).json({ error: 'Error creating post' })
     }
-};
+}
+
+export const getPosts = async (req: customRequest, res: Response) => {
+    try {
+        const posts = await prisma.post.findMany({
+            include: {
+                user: true,
+                reviews: true,
+                postulations: true,
+            
+            },
+        });
+
+        const sanitizedPosts = posts.map(post => {
+            const { password, ...userWithoutPassword } = post.user; 
+            return {
+                ...post,
+                user: userWithoutPassword,
+            };
+        });
+
+        res.status(200).json(sanitizedPosts);
+    } catch (error) {
+        res.status(500).json({ error: 'Error retrieving posts' });
+    }
+}

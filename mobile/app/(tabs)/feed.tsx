@@ -1,6 +1,8 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { View, Text, ScrollView, Pressable, SafeAreaView } from 'react-native'
-import { Home, PlusSquare, User, Star, Bookmark } from 'lucide-react-native'
+import { Star, Bookmark } from 'lucide-react-native'
+import { usePostStore } from '../../zustand/usePostStore'
+
 
 const posts = [
   {
@@ -67,6 +69,12 @@ const RatingStars = ({ rating }: { rating: number }) => {
 }
 
 export default function feed() {
+  const setPost = usePostStore(state => state.setPosts)
+
+  useEffect(() => {
+    setPost()
+  }, [])
+
   return (
     <SafeAreaView className="flex-1 bg-gray-100">
 
@@ -115,7 +123,7 @@ export default function feed() {
           </View>
         ))}
       </ScrollView>
-      
+
     </SafeAreaView>
   )
 }
