@@ -1,10 +1,8 @@
 
-import React, { useState } from 'react'
+import React from 'react'
 import { View, Text, TextInput, Image, Pressable, ScrollView, Switch, Alert } from 'react-native'
-import { useAuthStore } from '../zustand/useAuthStore'
-import { createPost } from '../services/posts'
-import { DraftPost } from '../types'
-import { usePost } from '../hooks/usePost'
+import { useAuthStore } from '../../zustand/useAuthStore'
+import { usePost } from '../../hooks/usePost'
 
 export default function CreatePost() {
   const user = useAuthStore(state => state.user)

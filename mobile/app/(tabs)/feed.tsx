@@ -115,17 +115,7 @@ export default function feed() {
           </View>
         ))}
       </ScrollView>
-      <View className="flex-row justify-around items-center py-2 bg-white border-t border-gray-200">
-        <Pressable>
-          <Home color="#000" size={24} />
-        </Pressable>
-        <Pressable>
-          <PlusSquare color="#000" size={24} />
-        </Pressable>
-        <Pressable>
-          <User color="#000" size={24} />
-        </Pressable>
-      </View>
+      
     </SafeAreaView>
   )
 }
