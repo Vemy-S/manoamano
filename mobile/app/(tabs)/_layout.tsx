@@ -20,7 +20,7 @@ export default function TabsLayout() {
   />
   
   <Tabs.Screen
-    name="profile"
+    name="createPost"
     options={{
       tabBarIcon: ({ size, color }) => (
         <PlusSquare color="#000" size={24} />
@@ -29,7 +29,7 @@ export default function TabsLayout() {
   />
   
   <Tabs.Screen
-    name="createPost"
+    name="profile"
     options={{
       tabBarIcon: ({ size, color }) => (
         <User color="#000" size={24} />
