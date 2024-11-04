@@ -4,55 +4,6 @@ import { Star, Bookmark } from 'lucide-react-native'
 import { usePostStore } from '../../zustand/usePostStore'
 
 
-const posts = [
-  {
-    id: '1',
-    user: 'Diego Saavedra',
-    description: 'Ofrezco servicios de diseño gráfico para pequeñas empresas.',
-    type: 'ofrece',
-    rating: 4.5,
-    reviews: 23,
-    applicants: 1
-  },
-  {
-    id: '2',
-    user: 'Bastian estay',
-    description: 'Busco un fontanero para reparar una fuga en mi cocina y en mi corazon.',
-    type: 'requiere',
-    rating: 0,
-    reviews: 0,
-    applicants: 3
-  },
-  {
-    id: '3',
-    user: 'Damarys silva',
-    description: 'Ofrezco clases particulares de matemáticas.',
-    type: 'ofrece',
-    rating: 4.8,
-    reviews: 45,
-    applicants: 5
-  },
-  {
-    id: '2',
-    user: 'Bastian estay',
-    description: 'Busco un fontanero para reparar una fuga en mi cocina y en mi corazon.',
-    type: 'requiere',
-    rating: 0,
-    reviews: 0,
-    applicants: 3
-  },
-  {
-    id: '1',
-    user: 'Diego Saavedra',
-    description: 'Ofrezco servicios de diseño gráfico para pequeñas empresas.',
-    type: 'ofrece',
-    rating: 4.5,
-    reviews: 23,
-    applicants: 1
-  },
-  
-]
-
 const RatingStars = ({ rating }: { rating: number }) => {
   return (
     <View className="flex-row">
@@ -70,36 +21,38 @@ const RatingStars = ({ rating }: { rating: number }) => {
 
 export default function feed() {
   const setPost = usePostStore(state => state.setPosts)
+  const posts = usePostStore(state => state.posts)
 
   useEffect(() => {
     setPost()
-  }, [])
+  }, [setPost])
 
   return (
     <SafeAreaView className="flex-1 bg-gray-100">
 
       <ScrollView className="px-4">
         {posts.map(post => (
-          <View key={post.id} className="bg-white my-4 p-4 rounded-lg shadow">
+          <View key={post.user_id} className="bg-white my-4 p-4 rounded-lg shadow">
             <View className="flex-row justify-between items-center mb-2">
-              <Text className="font-semibold text-lg">{post.user}</Text>
+              <Text className="font-semibold text-lg flex-1">{post.title}</Text>
               <View className="px-2 py-1 bg-gray-200 rounded-full">
-                <Text className={post.type === 'ofrece' ? "text-indigo-600" : "text-indigo-900"}>
-                  {post.type === 'ofrece' ? "Ofrece" : "Requiere"}
+                <Text className={post.type === 'OFFER' ? "text-indigo-600" : "text-indigo-900"}>
+                  {post.type === 'OFFER' ? "Ofrece" : "Requiere"}
                 </Text>
               </View>
             </View>
             <Text className="text-gray-700 mb-3 text-center">{post.description}</Text>
             <View className="flex-row justify-between items-center mb-3">
               <View>
-                {post.rating > 0 ? (
+                {/* {post.rating > 0 ? (
                   <View className="flex-row items-center">
                     <RatingStars rating={post.rating} />
                     <Text className="ml-2 text-gray-600">({post.reviews} reseñas)</Text>
                   </View>
                 ) : (
                   <Text className="text-gray-500">Sin reseñas aún</Text>
-                )}
+                )} */}
+                <Text>RATING</Text>
               </View>
               <Pressable className="p-2">
                 <Bookmark color="#000" size={24} />
@@ -107,16 +60,16 @@ export default function feed() {
             </View>
             <View className="flex-row justify-between items-center">
               <Text className="text-gray-600">
-                Postulados: ({post.applicants}/5)
+                Postulados: ({post.postulations}/5)
               </Text>
               <Pressable 
                 className={`px-4 py-2 rounded-full ${
-                  post.applicants >= 5 ? 'bg-gray-300' : 'bg-indigo-400'
+                  post.maxPostulations >= 5 ? 'bg-gray-300' : 'bg-indigo-400'
                 }`}
-                disabled={post.applicants >= 5}
+                disabled={post.maxPostulations >= 5}
               >
                 <Text className="text-white font-semibold">
-                  {post.applicants >= 5 ? 'Completo' : 'Postularse'}
+                  {post.maxPostulations >= 5 ? 'Completo' : 'Postularse'}
                 </Text>
               </Pressable>
             </View>
