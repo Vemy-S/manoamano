@@ -13,7 +13,6 @@ export const usePostStore = create<usePostStore>((set)=> ({
     setPosts: async () => {
         try {
             const data = await getPosts()
-            console.log('data desde setPosts', data)
             set({posts: data})
         } catch (error) {
             console.error(error)

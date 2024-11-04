@@ -1,11 +1,11 @@
-import { View, TextInput, TouchableOpacity } from 'react-native'
+import { View, Text, TextInput, TouchableOpacity, Image } from 'react-native'
 import { Eye, EyeOff } from 'lucide-react-native'
 import Divider from '../components/Divider'
+import { useRegister } from '../hooks/useRegister'
 import BackButton from '../components/BackButton'
 import AuthRedirect from '../components/AuthRedirect'
 import PrimaryButton from '../components/PrimaryButton'
 import AuthImage from '../components/AuthImage'
-import { useLogin } from '../hooks/useLogin'
 
 export default function RegistrationScreen() {
   
@@ -15,24 +15,30 @@ export default function RegistrationScreen() {
     formValues, 
     showPassword,
     setShowPassword
-  } = useLogin()
+  } = useRegister()
 
 
 
   return (
     <View className="flex-1 bg-white">
-
-      <BackButton
-        href='/'
-      />
-
       
+      <BackButton
+        href='/login'
+      />
+    
       <View className="px-6 pt-4">
- 
+
+        <Text className='text-center text-4xl tracking-[4px] text-amber-900'>Mano a Mano</Text>
+        
         <AuthImage/>
 
-
         <View className="space-y-4 gap-3">
+          <TextInput
+            className="bg-gray-50 rounded-xl px-4 py-3 text-gray-900"
+            placeholder="Nombre completo"
+            value={formValues.fullname}
+            onChangeText={(value) => handleInputChange('fullname', value)}
+          />
 
           <TextInput
             className="bg-gray-50 rounded-xl px-4 py-3 text-gray-900"
@@ -41,6 +47,16 @@ export default function RegistrationScreen() {
             autoCapitalize="none"
             value={formValues.email}
             onChangeText={value => handleInputChange('email', value)}
+          />
+
+     
+
+          <TextInput
+            className="bg-gray-50 rounded-xl px-4 py-3 text-gray-900"
+            placeholder="Teléfono"
+            keyboardType="phone-pad"
+            value={formValues.phone}
+            onChangeText={(value) => handleInputChange('phone', value) }
           />
 
           <View className="relative">
@@ -61,34 +77,25 @@ export default function RegistrationScreen() {
                 <Eye size={20} color="#666" />
               )}
             </TouchableOpacity>
-            
+
           </View>
 
         </View>
 
         <PrimaryButton
           handleSubmit={handleSubmit}
-          text='Inicia Sesion'
+          text='Registrarse'
         />
 
         <Divider/>
 
         <AuthRedirect
-          message='No tienes cuenta?'
-          href='/RegisterScreen'
-          linkText='Registrate'
-        />
-        
+          message='Ya tienes cuenta?'
+          href='/login'
+          linkText='Inicia sesion'
+        />      
+      
       </View>
     </View>
   )
 }
-
-
-
-{/* <Link href="/register">Ir a registrarse</Link>
-      <Link href="/createPost">Ir a crear post</Link>
-      <Link href="/reviews">reviews</Link>
-      <Link href="/Feed">Inicio</Link>
-      <Link href="/CreatePostModal">Modal</Link>
-      <Link href="/RegisterScreen">prueba</Link> */}

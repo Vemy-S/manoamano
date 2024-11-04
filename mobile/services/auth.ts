@@ -18,9 +18,9 @@ export const login = async (email: User['email'], password: User['password']) =>
         const response = await axios.post(url, {email, password}, {
             withCredentials: true
         })
-        console.log(response)
         
-        return response.data
+        return response
+
     } catch (error) {
         
     }

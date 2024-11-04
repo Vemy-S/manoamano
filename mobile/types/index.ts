@@ -1,8 +1,8 @@
 export interface DraftUser {
-    fullname: string;
-    email: string;
-    phone: string;
-    password: string;
+    fullname: string
+    email: string
+    phone: string
+    password: string
 }
 
 export interface User extends DraftUser {
@@ -37,7 +37,7 @@ export interface Post extends DraftPost {
       status: string
     }
     reviews: any[]
-    postulations: any[]
+    postulations: number
 }
 
   

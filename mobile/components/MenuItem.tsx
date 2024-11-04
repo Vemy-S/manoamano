@@ -3,8 +3,8 @@ import React from 'react'
 import { ChevronRight } from 'lucide-react-native'
 
 interface MenuItemProps {
-    icon: React.ReactNode; 
-    title: string;
+    icon: React.ReactNode
+    title: string
 }
 
 export default function MenuItem({icon, title}: MenuItemProps) {

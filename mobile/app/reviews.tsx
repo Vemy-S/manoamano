@@ -35,7 +35,7 @@ export default function reviews() {
           <Text className="text-2xl font-bold mb-2">Bastian Estay</Text>
           <Text className="text-gray-600 mb-4">Electrico</Text>
           <Pressable 
-            className="bg-indigo-500 px-4 py-2 rounded-full"
+            className="bg-amber-500 px-4 py-2 rounded-full"
             onPress={() => console.log('Navegar a Configuración de Cuenta')}
           >
             <Text className="text-white font-semibold">Editar Perfil</Text>

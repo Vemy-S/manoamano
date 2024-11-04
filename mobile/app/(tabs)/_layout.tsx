@@ -1,14 +1,21 @@
 import { Tabs } from "expo-router";
 import { Home, PlusSquare, User } from 'lucide-react-native'
-
+import { useState } from "react";
+import CreatePostModal from "./CreatePostModal";
+import React from "react";
 
 export default function TabsLayout() {
+
+  const [isModalVisible, setModalVisible] = useState(false)
+  const openModal = () => setModalVisible(true)
+  const closeModal = () => setModalVisible(false)
 
   const tabBarStyle = {
     paddingBottom: 5,
     height: 50
-  };
-  return <Tabs
+  }
+  return <>
+  <Tabs
     screenOptions={{
         headerShown: false,
         /* tabBarStyle: {backgroundColor: "#4e4260"} */ // tabs color
@@ -17,7 +24,7 @@ export default function TabsLayout() {
     }}
   >
   <Tabs.Screen
-    name="feed"
+    name="Feed"
     options={{
       tabBarIcon: ({ size, color }) => (
         <Home color="#000" size={24} />
@@ -26,7 +33,13 @@ export default function TabsLayout() {
   />
   
   <Tabs.Screen
-    name="createPost"
+    name="CreatePostModal"
+    listeners={{
+      tabPress: (e) => {
+        e.preventDefault()
+        openModal()
+      }
+    }}  
     options={{
       tabBarIcon: ({ size, color }) => (
         <PlusSquare color="#000" size={24} />
@@ -43,5 +56,8 @@ export default function TabsLayout() {
     }}
   />
 
+
 </Tabs>
+  <CreatePostModal isVisible={isModalVisible} onClose={closeModal} />
+</>
 }

@@ -3,8 +3,12 @@ import { View, Text, Image, ScrollView, TouchableOpacity, SafeAreaView } from 'r
 import { ChevronRight, Settings, User2, X, MoreVertical, HandHelping, Star, Newspaper } from 'lucide-react-native'
 import MenuItem from '../../components/MenuItem'
 import { Link } from 'expo-router'
+import { useAuthStore } from '../../zustand/useAuthStore'
 
 export default function Profile() {
+
+  const user = useAuthStore(state => state.user)
+
   return (
     <SafeAreaView className="flex-1 bg-white">
       <ScrollView className="flex-1">
@@ -22,17 +26,17 @@ export default function Profile() {
       
         <View className="px-4 py-6">
           <View className="flex-row items-center mb-6">
-            <Image
-              source={{ uri: 'https://via.placeholder.com/60' }}
-              className="w-12 h-12 rounded-full mr-3"
-            />
+
+          <View className="w-9 h-9 bg-purple-100 rounded-full items-center justify-center">
+              <Text className="text-purple-600 font-semibold">{user.fullname[0]}</Text>
+          </View>
             <View>
               <Text className="text-gray-500 text-sm">Bienvenido</Text>
-              <Text className="text-gray-900 text-lg font-semibold">Jeremy Vega</Text>
+              <Text className="text-gray-900 text-lg font-semibold">{user.fullname}</Text>
             </View>
           </View>
 
-          {/* Help Button */}
+        
           <TouchableOpacity className="bg-[#8B5CF6] rounded-xl p-4 flex-row items-center mb-6">
             <HandHelping color="white" size={20} />
             <Text className="text-white ml-2 flex-1">Podemos ayudarte</Text>

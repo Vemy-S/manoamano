@@ -8,6 +8,7 @@ export const useLogin = () => {
 
     const router = useRouter()
 
+    const [showPassword, setShowPassword] = useState(false)
     const [formValues, setFormValues] = useState({
         email: '',
         password: ''
@@ -16,21 +17,24 @@ export const useLogin = () => {
     const handleInputChange = (field: keyof typeof formValues, value: string) => {
         setFormValues(prev => ({
             ...prev,
-            [field]: value
+            [field]: field === 'email' ? value.toLowerCase() : value
         }))
     }
 
     const handleSubmit = async () => {
         const result = await login(formValues.email, formValues.password)
-        console.log('Probando el result po', result)
-        setUser(result)
-        router.push('/createPost')
+        if(result?.status !== 200) return
+        console.log('Probando el result po', result.status)
+        setUser(result.data)
+        router.push('/Feed')
         
     }
 
     return {
         formValues,
+        showPassword,
         handleSubmit,
-        handleInputChange
+        handleInputChange,
+        setShowPassword
     }
 }

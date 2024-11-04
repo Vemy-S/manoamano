@@ -2,6 +2,7 @@ import { useState } from "react"
 import { register } from "../services/auth"
 
 export const useRegister = () => {
+  const [showPassword, setShowPassword] = useState(false)
 
     const [formValues, setFormValues] = useState({
       fullname: '',
@@ -13,7 +14,7 @@ export const useRegister = () => {
     const handleInputChange = (field: keyof typeof formValues, value: string) => {
       setFormValues(prev => ({
         ...prev,
-        [field]: value
+        [field]: field === 'email' ? value.toLowerCase() : value
       }))
     }
 
@@ -22,8 +23,10 @@ export const useRegister = () => {
     }
 
     return {
-        handleInputChange,
         formValues,
-        handleSubmit
+        showPassword,
+        handleInputChange,
+        handleSubmit,
+        setShowPassword
     }
 }

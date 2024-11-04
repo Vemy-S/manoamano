@@ -50,7 +50,7 @@ export const login = async (req:Request, res:Response): Promise<void> => {
         })
 
         if(!user) {
-            res.status(400).json({error: "User not found"})
+            res.status(404).json({error: "User not found"})
             return
         }
 

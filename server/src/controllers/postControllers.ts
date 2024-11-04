@@ -38,6 +38,9 @@ export const getPosts = async (req: customRequest, res: Response) => {
                 postulations: true,
             
             },
+            orderBy: {
+                createdAt: 'desc'
+            }
         });
 
         const sanitizedPosts = posts.map(post => {
