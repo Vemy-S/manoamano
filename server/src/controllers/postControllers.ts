@@ -50,6 +50,6 @@ export const getPosts = async (req: customRequest, res: Response) => {
 
         res.status(200).json(sanitizedPosts);
     } catch (error) {
-        res.status(500).json({ error: 'Error retrieving posts' });
+        res.status(500).json({ error: 'Error retrieving posts' })
     }
 }
