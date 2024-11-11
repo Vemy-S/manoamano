@@ -6,8 +6,9 @@ import AuthRedirect from '../components/AuthRedirect'
 import PrimaryButton from '../components/PrimaryButton'
 import AuthImage from '../components/AuthImage'
 import { useLogin } from '../hooks/useLogin'
+import { Link } from 'expo-router'
 
-export default function RegistrationScreen() {
+export default function login() {
   
   const { 
     handleSubmit,
@@ -69,6 +70,7 @@ export default function RegistrationScreen() {
         <PrimaryButton
           handleSubmit={handleSubmit}
           text='Inicia Sesion'
+          
         />
 
         <Divider/>
@@ -78,6 +80,8 @@ export default function RegistrationScreen() {
           href='/RegisterScreen'
           linkText='Registrate'
         />
+
+        <Link href='/ModalProfile'>Probnado algo</Link>
         
       </View>
     </View>

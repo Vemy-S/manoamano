@@ -20,7 +20,7 @@ export const usePost = () => {
       const handleSubmit = async() => {
         if (!postValues.title || !postValues.description || !postValues.type) {
           Alert.alert('Error', 'Por favor completa todos los campos.');
-          return;
+          return
         }
         console.log('Submitting post:', { postValues })
     

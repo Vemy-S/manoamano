@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { View, Text, TextInput, TouchableOpacity, Modal, ScrollView, Switch } from 'react-native'
-import { X, ChevronDown } from 'lucide-react-native'
-import { useAuthStore } from '../../zustand/useAuthStore'
+import { X } from 'lucide-react-native'
 import { usePost } from '../../hooks/usePost'
 
 const categories = [
@@ -61,6 +60,7 @@ export default function CreatePostModal({ isVisible, onClose }: any) {
               />
             </View>
 
+          
      {/*        <View className="mb-4">
               <Text className="text-gray-700 mb-2 font-semibold">Categoría</Text>
               <TouchableOpacity

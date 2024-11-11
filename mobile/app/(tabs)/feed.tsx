@@ -14,6 +14,7 @@ export default function Feed() {
   
   const { refreshing, fetchPost, onRefresh } = useFeed()
 
+
   useEffect(() => {
     fetchPost()
   }, [])
@@ -40,7 +41,6 @@ export default function Feed() {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>
       }
       >
-  
         <HeaderFeed/>
         <FavoritesFeed
           renderApplicationButton={renderApplicationButton}

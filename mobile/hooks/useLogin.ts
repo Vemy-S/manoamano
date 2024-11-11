@@ -26,7 +26,7 @@ export const useLogin = () => {
         if(result?.status !== 200) return
         console.log('Probando el result po', result.status)
         setUser(result.data)
-        router.push('/Feed')
+        router.push('/feed')
         
     }
 

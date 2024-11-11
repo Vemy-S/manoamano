@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { DraftPost } from '../types';
+import type { DraftPost, Post } from '../types';
 
 export const createPost = async (postData: DraftPost) => {
     try {
@@ -16,7 +16,6 @@ export const createPost = async (postData: DraftPost) => {
     }
 }
 
-
 export const getPosts = async () => {
     try {
         const url = `${process.env.API_BASE_URL}/post/get`
@@ -25,5 +24,19 @@ export const getPosts = async () => {
     } catch (error) {
         console.error(error);
         throw error;
+    }
+}
+
+export const postulation = async (id: Post['post_id']) => {
+    try {
+        const url = `${process.env.API_BASE_URL}/post/postulation/${id}`
+        const response = await axios.post(url, {}, {
+            withCredentials: true
+        })
+
+        return response.data
+    } catch (error) {
+        console.error(error)
+        throw error
     }
 }

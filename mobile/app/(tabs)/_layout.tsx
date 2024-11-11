@@ -24,7 +24,7 @@ export default function TabsLayout() {
     }}
   >
   <Tabs.Screen
-    name="Feed"
+    name="feed"
     options={{
       tabBarIcon: ({ size, color }) => (
         <Home color="#000" size={24} />

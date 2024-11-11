@@ -22,7 +22,7 @@ model User {
   role             Role           @default(USER)
   posts            Post[]
   reviews          Review[]
-  favorites        Int[]
+  favorites        Favorite[]
   photo            String?
   status           UserStatus     @default(ACTIVE)
   notifications    Notification[]
@@ -35,29 +35,41 @@ model User {
 }
 
 model Post {
-  post_id         Int            @id @default(autoincrement())
-  title           String
-  description     String
-  type            PostType
-  status          PostStatus     @default(OPEN)
-  user_id         Int
-  user            User           @relation(fields: [user_id], references: [user_id])
-  reviews         Review[]
-  favorites       Int[]
-  postulations    Postulation[]
-  maxPostulations Int            @default(5)
-  tags            String[]
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
+  post_id           Int            @id @default(autoincrement())
+  title             String
+  description       String
+  type              PostType
+  status            PostStatus     @default(OPEN)
+  user_id           Int
+  user              User           @relation(fields: [user_id], references: [user_id])
+  reviews           Review[]
+  favorites         Favorite[]
+  postulations      Postulation[]
+  postulation_count Int            @default(0)
+  maxPostulations   Int            @default(5)
+  tags              String[]
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+}
+
+model Favorite {
+  favorite_id       Int      @id @default(autoincrement())
+  user              User     @relation(fields: [user_id], references: [user_id])
+  user_id           Int
+  post              Post     @relation(fields: [post_id], references: [post_id])
+  post_id           Int
+  createdAt         DateTime @default(now())
+
+  @@unique([user_id, post_id]) 
 }
 
 model Review {
   review_id   Int      @id @default(autoincrement())
   rating      Int
   comment     String
-  user_id      Int
+  user_id     Int
   user        User     @relation(fields: [user_id], references: [user_id])
-  post_id      Int
+  post_id     Int
   post        Post     @relation(fields: [post_id], references: [post_id])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -65,7 +77,7 @@ model Review {
 
 model Notification {
   notification_id Int      @id @default(autoincrement())
-  user_id          Int
+  user_id         Int
   user            User     @relation(fields: [user_id], references: [user_id])
   message         String
   postId          Int?
@@ -82,6 +94,7 @@ model Postulation {
   post            Post     @relation(fields: [post_id], references: [post_id])
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+
 }
 
 model Message {
