@@ -2,12 +2,14 @@ import { View, Text, TouchableOpacity, ScrollView } from 'react-native'
 import React, { ReactNode } from 'react'
 import { usePostStore } from '../zustand/usePostStore'
 import { Star } from 'lucide-react-native'
+import { Post } from '../types'
+import PostulationButton from './PostulationButton'
 
-type FavoritesFeed = {
-    renderApplicationButton: (applications: number) => ReactNode
+type FavoritesFeedProps = {
+    handlePostulation: (post_id: Post['post_id']) => void
 }
 
-export default function FavoritesFeed({renderApplicationButton}: FavoritesFeed) {
+export default function FavoritesFeed({handlePostulation}: FavoritesFeedProps) {
     const posts = usePostStore(state => state.posts)
     return (
         <View className="mt-6">
@@ -43,7 +45,12 @@ export default function FavoritesFeed({renderApplicationButton}: FavoritesFeed) 
                     <View className="flex-row justify-between items-center mb-3">
                     <Text className="text-gray-600">{post.tags}</Text>
                     </View>
-                    {renderApplicationButton(post.postulations)}
+                    <PostulationButton 
+                        applications={post.postulation_count} 
+                        maxPostulations={post.maxPostulations} 
+                        post_id={post.post_id} 
+                        handlePostulation={handlePostulation} 
+                    />
                 </TouchableOpacity>
                 ))}
             </ScrollView>

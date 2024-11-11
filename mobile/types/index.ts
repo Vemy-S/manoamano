@@ -22,6 +22,7 @@ export interface Post extends DraftPost {
     readonly post_id: number
     status: string
     favorites: []
+    postulation_count: number
     maxPostulations: number
     tags: any[]
     createdAt: Date
@@ -37,7 +38,7 @@ export interface Post extends DraftPost {
       status: string
     }
     reviews: any[]
-    postulations: number
+    postulations: []
 }
 
   

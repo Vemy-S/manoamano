@@ -154,8 +154,9 @@ export const postulationPost = async (req:customRequest, res:Response) => {
     } catch (error) {
         console.error(error)
         res.status(500).json({
-            error: "Error applying to the post"
-        })
+            error: "Error applying to the post",
+            details: error.message
+          })
     }
 }
 
