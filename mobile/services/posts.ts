@@ -1,4 +1,3 @@
-import axios, { Axios, AxiosError } from 'axios';
 import api from '../httpService';
 import type { DraftPost, Post } from '../types';
 
@@ -7,8 +6,8 @@ export const createPost = async (postData: DraftPost) => {
       console.log(postData);
       const response = await api.post('/post/create', postData, {
           withCredentials: true
-      });
-      console.log(response);
+      })
+      console.log(response)
       return response.data
   } catch (error) {
       console.error('Error creating post:', error)

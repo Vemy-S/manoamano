@@ -1,4 +1,3 @@
-import axios from 'axios'
 import api from '../httpService'
 import { DraftUser, User } from '../types'
 
