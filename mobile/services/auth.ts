@@ -5,9 +5,9 @@ import { DraftUser, User } from '../types'
 export const register = async (user: DraftUser) => {
     try {
         const response = await api.post('/auth/register', user);
-        console.log(response);
+        console.log(response)
     } catch (error) {
-        console.error(error);
+        console.error(error)
     }
 }
 
@@ -19,6 +19,6 @@ export const login = async (email: User['email'], password: User['password']) =>
         
         return response;
     } catch (error) {
-        console.error(error);
+        console.error(error)
     }
 }
