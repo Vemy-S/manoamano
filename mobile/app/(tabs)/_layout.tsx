@@ -61,3 +61,4 @@ export default function TabsLayout() {
   <CreatePostModal isVisible={isModalVisible} onClose={closeModal} />
 </>
 }
+
