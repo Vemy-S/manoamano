@@ -15,6 +15,16 @@ export const createPost = async (postData: DraftPost) => {
   }
 }
 
+export const getPostById = async (postId: number): Promise<Post> => {
+    try {
+      const response = await api.get(`/post/${postId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching post details:', error);
+      throw error;
+    }
+  };
+
 export const getPosts = async () => {
   try {
       const response = await api.get('/post/get')

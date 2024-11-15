@@ -7,5 +7,4 @@ const router = Router()
 router.post('/create', authenticate, createPost)
 router.post('/postulation/:id', authenticate, postulationPost)
 router.get('/get', getPosts)
-
 export default router
