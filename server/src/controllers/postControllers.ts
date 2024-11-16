@@ -55,7 +55,7 @@ export const getPosts = async (req: customRequest, res: Response) => {
         })
 
         const sanitizedPosts = posts.map(post => {
-            const { contrasena, ...userWithoutPassword } = post.usuario
+            //const { contrasena, ...userWithoutPassword } = post.usuario
 
             return {
                 post_id: post.publicacion_id,
@@ -158,6 +158,62 @@ export const postulationPost = async (req:customRequest, res:Response) => {
             error: "Error applying to the post",
             details: error.message
           })
+    }
+}
+
+export const getPostById = async (req: customRequest, res: Response) => {
+    const { id } = req.params
+    try {
+        const post_id = Number(id)
+    
+        const post = await prisma.publicacion.findUnique({
+            where: { publicacion_id: post_id },
+            include: {
+                resenas: true,
+                usuario: true,
+                postulaciones: true
+            }
+        })
+
+        const postDetails = {
+            post_id: post.publicacion_id,
+            title: post.titulo,
+            type: post.tipo,
+            description: post.descripcion,
+            user_id: post.usuario_id,
+            status: post.estado,
+            postulation_count: post.cantidad_postulaciones,
+            maxPostulations: post.maximo_postulaciones,
+            tags: post.etiquetas,
+            createdAt: new Date(post.fechaCreacion),
+            updatedAt: new Date(post.fechaActualizacion),  
+            user: {
+                user_id: post.usuario.usuario_id,
+                fullname: post.usuario.nombre_completo,
+                email: post.usuario.correo,
+                phone: post.usuario.telefono,
+                role: post.usuario.rol,
+                photo: post.usuario.foto,
+                status: post.usuario.estado
+            },
+            review: post.resenas.map((review) => ({
+                review_id: review.resena_id,
+                user_id: review.usuario_id,
+                calification: review.calificacion,
+                comment: review.comentario,
+                createdAt: review.fechaCreacion,
+                updatedAt: review.fechaActualizacion
+            })),
+            postulations: post.postulaciones
+        }
+
+        res.json({postDetails})
+    } catch (error) {
+        res.json({
+            error: "Internal server error"
+        })
+        console.error(error)
+        
     }
 }
 
