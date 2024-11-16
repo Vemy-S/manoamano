@@ -49,8 +49,6 @@ export default function RegistrationScreen() {
             onChangeText={value => handleInputChange('email', value)}
           />
 
-     
-
           <TextInput
             className="bg-gray-50 rounded-xl px-4 py-3 text-gray-900"
             placeholder="Teléfono"
