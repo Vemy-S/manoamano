@@ -28,7 +28,7 @@ export default function Profile() {
           <View className="flex-row items-center mb-6">
 
           <View className="w-9 h-9 bg-purple-100 rounded-full items-center justify-center">
-              <Text className="text-purple-600 font-semibold">{user.fullname[0]}</Text>
+              <Text className="text-purple-600 font-semibold">{user.fullname}</Text>
           </View>
             <View>
               <Text className="text-gray-500 text-sm">Bienvenido</Text>

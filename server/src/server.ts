@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import corsOptions from './config/corsOptions'
 import postRoutes from './routes/postRoutes'
+import reviewRoutes from './routes/reviewRoutes'
 
 const app = express()
 
@@ -19,5 +20,6 @@ app.use(cookieParser())
 app.use('/api/auth', authRoutes)
 app.use('/api/user', userRoutes)
 app.use('/api/post', postRoutes)
+app.use('/api/review', reviewRoutes)
 
 export default app

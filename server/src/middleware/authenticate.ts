@@ -18,10 +18,11 @@ export const authenticate = (req: customRequest, res: Response, next: NextFuncti
             if(err){
                 return res.status(403).json({ error: "Invalid token" })
             }
+           
             req.user = decoded
+            console.log(req.user)
             next()
         })
-
 
     } catch (error) {
         console.error(error)

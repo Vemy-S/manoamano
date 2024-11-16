@@ -7,6 +7,7 @@ export interface DraftUser {
 
 export interface User extends DraftUser {
     readonly user_id: number | null
+    photo: string | null
 }
 
 type PostType = "OFFER" | "REQUEST"

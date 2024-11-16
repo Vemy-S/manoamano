@@ -12,7 +12,8 @@ export const useAuthStore = create<useAuthStore>((set)=> ({
         fullname: '',
         email: '',
         password: '',
-        phone: ''
+        phone: '',
+        photo: ''
     },
     setUser: (user) => set({user})
 }))

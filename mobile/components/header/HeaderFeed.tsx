@@ -1,7 +1,6 @@
 import { View, Text, TextInput } from 'react-native'
 import React from 'react'
 import { useAuthStore } from '../../zustand/useAuthStore'
-import { Search } from 'lucide-react-native'
 import SearchComponent from './SearchComponent'
 
 export default function HeaderFeed() {
