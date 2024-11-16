@@ -207,7 +207,7 @@ export const getPostById = async (req: customRequest, res: Response) => {
             postulations: post.postulaciones
         }
 
-        res.json({postDetails})
+        res.json(postDetails)
     } catch (error) {
         res.json({
             error: "Internal server error"
