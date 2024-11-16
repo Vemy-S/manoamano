@@ -1,97 +1,98 @@
 import prisma from '../config/prismaconfig';
 import { Response } from 'express';
 import { customRequest } from '../middleware/authenticate';
+import convertType from '../utils/convertType';
 
 export const createPost = async (req: customRequest, res: Response) => {
     const { title, description, type } = req.body
-    const { user_id } = req.user
+    const { usuario_id } = req.user
     try {
-        console.log(user_id)
+        console.log(usuario_id)
         console.log(title, description, type)
         if (!title || !description || !type) {
             res.status(400).json({ error: 'Title, description, and type are required' });
             return 
         }
 
-        const newPost = await prisma.post.create({
-            data: {
-                user_id,
-                title,
-                description,
-                type
-            },
-        })    
+        const correctType = convertType(type)
 
-        res.status(201).json(newPost)
+        const newPost = await prisma.publicacion.create({
+            data: {
+                usuario_id,
+                titulo: title,
+                descripcion: description,
+                tipo: correctType
+            }
+        })
+    
+        const postResponse = {
+            post_id: newPost.publicacion_id,
+            user_id: newPost.usuario_id,
+            title: newPost.titulo,
+            description: newPost.descripcion,
+            type: newPost.tipo,
+            createdAt: newPost.fechaCreacion
+        }
+
+        res.status(201).json(postResponse)
     } catch (error) {
+        console.error(error)
         res.status(500).json({ error: 'Error creating post' })
     }
 }
 
 export const getPosts = async (req: customRequest, res: Response) => {
     try {
-        const posts = await prisma.post.findMany({
+        const posts = await prisma.publicacion.findMany({
             include: {
-                user: true,
-                reviews: true,
-                postulations: true,
+                usuario: true,
+                resenas: true,
+                postulaciones: true,
             },
             orderBy: {
-                createdAt: 'desc'
+                fechaCreacion: 'desc'
             }
-        });
+        })
 
         const sanitizedPosts = posts.map(post => {
-            const { password, ...userWithoutPassword } = post.user; 
+            const { contrasena, ...userWithoutPassword } = post.usuario
+
             return {
-                ...post,
-                user: userWithoutPassword,
-            };
+                post_id: post.publicacion_id,
+                title: post.titulo,
+                type: post.tipo,
+                description: post.descripcion,
+                user_id: post.usuario_id,
+                status: post.estado,
+                favorites: [],
+                postulation_count: post.cantidad_postulaciones,
+                maxPostulations: post.maximo_postulaciones,
+                tags: post.etiquetas,
+                createdAt: new Date(post.fechaCreacion),
+                updatedAt: new Date(post.fechaActualizacion),
+                user: {
+                    user_id: post.usuario.usuario_id,
+                    fullname: post.usuario.nombre_completo,
+                    email: post.usuario.correo,
+                    phone: post.usuario.telefono,
+                    role: post.usuario.rol,
+                    favorites: [],
+                    photo: post.usuario.foto,
+                    status: post.usuario.estado
+                },
+                reviews: post.resenas,
+                postulations: post.postulaciones
+            }
         })
-        res.status(200).json(sanitizedPosts);
+        
+        res.status(200).json(sanitizedPosts)
     } catch (error) {
         res.status(500).json({ error: 'Error retrieving posts' })
     }
 }
 
-export const favoritePost = async (req:customRequest, res:Response) => {
-    const { user_id } = req.user
-    const { id } = req.params
-    try {
-        const post_id = Number(id)
-        if(!post_id){
-            res.status(400).json({
-                error: "Error not post id"
-            })
-            return
-        }
-        const existingFavorite = await prisma.favorite.findUnique({
-            where: { user_id_post_id: {user_id, post_id} }
-        })
-
-        if(existingFavorite){
-            res.status(400).json({
-                error: "Already exists post in favorites"
-            })
-        }
-
-        const favorite = await prisma.favorite.create({
-            data: {
-                user_id,
-                post_id
-            }
-        })
-        res.json(favorite)
-    } catch (error) {
-        res.status(500).json({
-            error: "Error favorite post"
-        })
-        console.error(error)
-    }
-}
-
 export const postulationPost = async (req:customRequest, res:Response) => {
-    const { user_id } = req.user
+    const { usuario_id } = req.user
     const { id } = req.params
     try {
         const post_id = Number(id)
@@ -103,8 +104,8 @@ export const postulationPost = async (req:customRequest, res:Response) => {
             return
         }
 
-        const existPostulation = await prisma.postulation.findFirst({
-            where: { user_id, post_id }
+        const existPostulation = await prisma.postulacion.findFirst({
+            where: { usuario_id, publicacion_id: post_id }
         })
 
         if(existPostulation){
@@ -114,8 +115,8 @@ export const postulationPost = async (req:customRequest, res:Response) => {
             return
         }
 
-        const post = await prisma.post.findUnique({
-            where: { post_id }
+        const post = await prisma.publicacion.findUnique({
+            where: { publicacion_id: post_id }
         })
 
         if(!post){
@@ -125,28 +126,28 @@ export const postulationPost = async (req:customRequest, res:Response) => {
             return
         }
 
-        const currentPostulationCount = await prisma.postulation.count({
-            where: { post_id }
+        const currentPostulationCount = await prisma.publicacion.count({
+            where: { publicacion_id: post_id }
         })
 
-        if(currentPostulationCount >= post.maxPostulations) {
+        if(currentPostulationCount >= post.maximo_postulaciones) {
             res.status(400).json({
                 error: "Max postulations reached for this post"
             })
             return
         }
 
-        const postulation = await prisma.postulation.create({
+        const postulation = await prisma.postulacion.create({
             data:{
-                user_id,
-                post_id,
+                usuario_id,
+                publicacion_id: post_id,
             }
         })
 
-        await prisma.post.update({
-            where: { post_id },
+        await prisma.publicacion.update({
+            where: { publicacion_id: post_id },
             data: {
-                postulation_count: { increment: 1 }
+                cantidad_postulaciones: { increment: 1 }
             }
         })
 

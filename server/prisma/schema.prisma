@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,126 +7,125 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  user_id          Int            @id @default(autoincrement())
-  fullname         String
-  email            String         @unique
-  password         String
-  phone            String
-  role             Role           @default(USER)
-  posts            Post[]
-  reviews          Review[]
-  favorites        Favorite[]
-  photo            String?
-  status           UserStatus     @default(ACTIVE)
-  notifications    Notification[]
-  postulations     Postulation[]
-  sentMessages     Message[]      @relation("SentMessages")
-  receivedMessages Message[]      @relation("ReceivedMessages")
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
-  lastLoginAt      DateTime?
+model Usuario {
+  usuario_id            Int               @id @default(autoincrement())
+  nombre_completo       String
+  correo                String            @unique
+  contrasena            String
+  telefono              String
+  rol                   Rol               @default(USUARIO)
+  publicaciones         Publicacion[]
+  resenas               Resena[]
+  favoritos             Favorito[]
+  foto                  String?
+  estado                EstadoUsuario     @default(ACTIVO)
+  notificaciones        Notificacion[]
+  postulaciones         Postulacion[]
+  mensajesEnviados      Mensaje[]         @relation("MensajesEnviados")
+  mensajesRecibidos     Mensaje[]         @relation("MensajesRecibidos")
+  fechaCreacion         DateTime          @default(now())
+  fechaActualizacion    DateTime          @updatedAt
+  ultimoInicio          DateTime?
 }
 
-model Post {
-  post_id           Int            @id @default(autoincrement())
-  title             String
-  description       String
-  type              PostType
-  status            PostStatus     @default(OPEN)
-  user_id           Int
-  user              User           @relation(fields: [user_id], references: [user_id])
-  reviews           Review[]
-  favorites         Favorite[]
-  postulations      Postulation[]
-  postulation_count Int            @default(0)
-  maxPostulations   Int            @default(5)
-  tags              String[]
-  createdAt         DateTime       @default(now())
-  updatedAt         DateTime       @updatedAt
+model Publicacion {
+  publicacion_id         Int               @id @default(autoincrement())
+  titulo                 String
+  descripcion            String
+  tipo                   TipoPublicacion
+  estado                 EstadoPublicacion @default(ABIERTA)
+  usuario_id             Int
+  usuario                Usuario           @relation(fields: [usuario_id], references: [usuario_id])
+  resenas                Resena[]
+  favoritos              Favorito[]
+  postulaciones          Postulacion[]
+  cantidad_postulaciones Int               @default(0)
+  maximo_postulaciones   Int               @default(5)
+  etiquetas              String[]
+  fechaCreacion          DateTime          @default(now())
+  fechaActualizacion     DateTime          @updatedAt
 }
 
-model Favorite {
-  favorite_id       Int      @id @default(autoincrement())
-  user              User     @relation(fields: [user_id], references: [user_id])
-  user_id           Int
-  post              Post     @relation(fields: [post_id], references: [post_id])
-  post_id           Int
-  createdAt         DateTime @default(now())
+model Favorito {
+  favorito_id         Int             @id @default(autoincrement())
+  usuario             Usuario         @relation(fields: [usuario_id], references: [usuario_id])
+  usuario_id          Int
+  publicacion         Publicacion     @relation(fields: [publicacion_id], references: [publicacion_id])
+  publicacion_id      Int
+  fechaCreacion            DateTime   @default(now())
 
-  @@unique([user_id, post_id]) 
+  @@unique([usuario_id, publicacion_id]) 
 }
 
-model Review {
-  review_id   Int      @id @default(autoincrement())
-  rating      Int
-  comment     String
-  user_id     Int
-  user        User     @relation(fields: [user_id], references: [user_id])
-  post_id     Int
-  post        Post     @relation(fields: [post_id], references: [post_id])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+model Resena {
+  resena_id            Int         @id @default(autoincrement())
+  calificacion         Int
+  comentario           String
+  usuario_id           Int
+  usuario              Usuario     @relation(fields: [usuario_id], references: [usuario_id])
+  publicacion_id       Int
+  publicacion          Publicacion @relation(fields: [publicacion_id], references: [publicacion_id])
+  fechaCreacion        DateTime    @default(now())
+  fechaActualizacion   DateTime    @updatedAt
 }
 
-model Notification {
-  notification_id Int      @id @default(autoincrement())
-  user_id         Int
-  user            User     @relation(fields: [user_id], references: [user_id])
-  message         String
-  postId          Int?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+model Notificacion {
+  notificacion_id        Int       @id @default(autoincrement())
+  usuario_id             Int
+  usuario                Usuario   @relation(fields: [usuario_id], references: [usuario_id])
+  mensaje                String
+  publicacionId          Int?
+  fechaCreacion          DateTime  @default(now())
+  fechaActualizacion     DateTime  @updatedAt
 }
 
-model Postulation {
-  postulation_id  Int      @id @default(autoincrement())
-  user_id         Int
-  post_id         Int
-  status          PostulationStatus @default(PENDING)
-  user            User     @relation(fields: [user_id], references: [user_id])
-  post            Post     @relation(fields: [post_id], references: [post_id])
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-
+model Postulacion {
+  postulacion_id     Int               @id @default(autoincrement())
+  usuario_id         Int
+  publicacion_id     Int
+  estado             EstadoPostulacion @default(PENDIENTE)
+  usuario            Usuario           @relation(fields: [usuario_id], references: [usuario_id])
+  publicacion        Publicacion       @relation(fields: [publicacion_id], references: [publicacion_id])
+  fechaCreacion      DateTime          @default(now())
+  fechaActualizacion DateTime          @updatedAt
 }
 
-model Message {
-  message_id  Int      @id @default(autoincrement())
-  senderId    Int
-  receiverId  Int
-  content     String
-  sender      User     @relation("SentMessages", fields: [senderId], references: [user_id])
-  receiver    User     @relation("ReceivedMessages", fields: [receiverId], references: [user_id])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+model Mensaje {
+  mensaje_id           Int       @id @default(autoincrement())
+  remitenteId          Int
+  receptorId           Int
+  contenido            String
+  remitente            Usuario   @relation("MensajesEnviados", fields: [remitenteId], references: [usuario_id])
+  receptor             Usuario   @relation("MensajesRecibidos", fields: [receptorId], references: [usuario_id])
+  fechaCreacion        DateTime  @default(now())
+  fechaActualizacion   DateTime  @updatedAt
 }
 
-enum Role {
-  USER
-  ADMIN
+enum Rol {
+  USUARIO
+  ADMINISTRADOR
 }
 
-enum PostType {
-  OFFER
-  REQUEST
+enum TipoPublicacion {
+  OFERTA
+  SOLICITUD
 }
 
-enum PostStatus {
-  OPEN
-  COMPLETED
+enum EstadoPublicacion {
+  ABIERTA
+  COMPLETADA
 }
 
-enum UserStatus {
-  ACTIVE
-  INACTIVE
-  BANNED
+enum EstadoUsuario {
+  ACTIVO
+  INACTIVO
+  BANEADO
 }
 
-enum PostulationStatus {
-  PENDING
-  ACCEPTED
-  REJECTED
-  IN_PROGRESS
-  COMPLETED
+enum EstadoPostulacion {
+  PENDIENTE
+  ACEPTADA
+  RECHAZADA
+  EN_PROGRESO
+  COMPLETADA
 }

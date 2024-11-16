@@ -1,6 +1,6 @@
-import { create } from "zustand";
-import type { Post } from '../types';
-import { getPosts } from "../services/posts";
+import { create } from "zustand"
+import type { Post } from '../types'
+import { getPosts } from "../services/posts"
 
 
 type usePostStore = {
