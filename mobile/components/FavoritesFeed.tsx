@@ -7,11 +7,11 @@ import PostulationButton from './PostulationButton'
 import { Link } from 'expo-router'
 
 type FavoritesFeedProps = {
-  handlePostulation: (post_id: Post['post_id']) => void;
-};
+  handlePostulation: (post_id: Post['post_id']) => void
+}
 
 export default function FavoritesFeed({ handlePostulation }: FavoritesFeedProps) {
-  const posts = usePostStore(state => state.posts)
+  const userPostulations = usePostStore(state => state.userPostulations)
 
   return (
     <View className="mt-6">
@@ -27,32 +27,33 @@ export default function FavoritesFeed({ handlePostulation }: FavoritesFeedProps)
         showsHorizontalScrollIndicator={false}
         className="px-4"
       >
-        {posts.map(post => (
+        {userPostulations.map(post => (
           <Link key={post.post_id} href={`/${post.post_id}`} asChild>
             <TouchableOpacity 
               className="mr-4 bg-white rounded-2xl shadow-sm w-72 p-4 border border-gray-100"
             >
               <View className="flex-row justify-between items-start mb-2">
                 <View className="bg-purple-100 rounded-full px-2 py-1">
-                  <Text className="text-purple-600 font-semibold">{post.type}</Text>
+                  <Text className="text-purple-600 font-semibold">{post.post.type}</Text>
                 </View>
                 <View className="flex-row items-center">
                   <Star size={16} color="#FFD700" fill="#FFD700" />
-                  <Text className="ml-1 text-gray-600">{post.reviews}</Text>
+                  <Text className="ml-1 text-gray-600">{''}</Text>
                 </View>
               </View>
-              <Text className="text-lg font-semibold mb-1">{post.title}</Text>
-              <Text className="text-gray-500 mb-2">por {post.user.fullname}</Text>
-              <Text className="text-gray-600 mb-2 line-clamp-2">{post.description}</Text>
+              <Text className="text-lg font-semibold mb-1">{post.post.title}</Text>
+              <Text className="text-gray-500 mb-2">por {post.post.user.fullname}</Text>
+              <Text className="text-gray-600 mb-2 line-clamp-2">{post.post.description}</Text>
               <View className="flex-row justify-between items-center mb-3">
-                <Text className="text-gray-600">{post.tags}</Text>
+                <Text className="text-gray-600">{post.post.tags}</Text>
               </View>
-              <PostulationButton 
+              
+            {/*   <PostulationButton 
                 applications={post.postulation_count} 
                 maxPostulations={post.maxPostulations} 
                 post_id={post.post_id} 
                 handlePostulation={handlePostulation} 
-              />
+              /> Jeremy => Hacer boton para quitar la postulacion.*/}
             </TouchableOpacity>
           </Link>
         ))}

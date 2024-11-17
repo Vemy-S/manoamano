@@ -2,6 +2,7 @@ import prisma from '../config/prismaconfig';
 import { Response } from 'express';
 import { customRequest } from '../middleware/authenticate';
 import convertType from '../utils/convertType';
+import { EstadoPostulacion } from '@prisma/client';
 
 export const createPost = async (req: customRequest, res: Response) => {
     const { title, description, type } = req.body
@@ -217,3 +218,70 @@ export const getPostById = async (req: customRequest, res: Response) => {
     }
 }
 
+export const getUserPostulations = async (req: customRequest, res: Response) => {
+    const { usuario_id } = req.user
+    try {
+        const postulations = await prisma.postulacion.findMany({
+            where: { usuario_id }, 
+            include: { 
+                publicacion: { 
+                    include: {
+                        usuario: true, 
+                    }
+                },
+                usuario: true  
+            },
+            orderBy: {
+                publicacion: {
+                    fechaCreacion: 'desc'
+                }
+            }
+        })
+
+       
+        const postulationDetails = postulations.map(postulation => ({
+            postulation_id: postulation.postulacion_id,
+            user_id: postulation.usuario_id, 
+            post_id: postulation.publicacion_id,
+            status: postulation.estado,
+            createdAt: postulation.fechaCreacion,
+            updatedAt: postulation.fechaActualizacion,
+            post: {  
+                post_id: postulation.publicacion.publicacion_id,
+                title: postulation.publicacion.titulo,
+                description: postulation.publicacion.descripcion,
+                type: postulation.publicacion.tipo,
+                post_status: postulation.publicacion.estado,
+                user_id: postulation.publicacion.usuario_id, 
+                number_of_postulations: postulation.publicacion.cantidad_postulaciones,
+                max_postulations: postulation.publicacion.maximo_postulaciones,
+                tags: postulation.publicacion.etiquetas,
+                createdAt: postulation.publicacion.fechaCreacion,
+                updatedAt: postulation.publicacion.fechaActualizacion,
+                user: { // Usuario que creo el post
+                    user_id: postulation.publicacion.usuario.usuario_id,
+                    fullname: postulation.publicacion.usuario.nombre_completo,
+                    email: postulation.publicacion.usuario.correo,
+                    phone: postulation.publicacion.usuario.telefono,
+                    role: postulation.publicacion.usuario.rol,
+                    photo: postulation.publicacion.usuario.foto,
+                    status: postulation.publicacion.usuario.estado
+                }
+            },
+            user: { // Usuario que postula
+                user_id: postulation.usuario_id,
+                fullname: postulation.usuario.nombre_completo,
+                email: postulation.usuario.correo,
+                phone: postulation.usuario.telefono,
+                role: postulation.usuario.rol,
+                photo: postulation.usuario.foto,
+                status: postulation.usuario.estado
+            }
+        }))
+
+        res.json(postulationDetails)
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ error: "Internal server error" })
+    }
+}

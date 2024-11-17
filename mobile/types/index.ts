@@ -22,7 +22,6 @@ export interface Post extends DraftPost {
     readonly user_id: number
     readonly post_id: number
     status: string
-    favorites: []
     postulation_count: number
     maxPostulations: number
     tags: any[]
@@ -42,4 +41,43 @@ export interface Post extends DraftPost {
     postulations: []
 }
 
+export type PostulationDetail = {
+    postulation_id: number
+    user_id: number
+    post_id: number
+    status: string
+    createdAt: string
+    updatedAt: string
+    post: {
+      post_id: number
+      title: string
+      description: string
+      type: string
+      post_status: string
+      user_id: number
+      number_of_postulations: number
+      max_postulations: number
+      tags: string
+      createdAt: string
+      updatedAt: string
+      user: { // Creador del post
+        user_id: number
+        fullname: string
+        email: string
+        phone: string
+        role: string
+        photo: string
+        status: string
+      }
+    }
+    user: { // Postulador del post
+      user_id: number
+      fullname: string
+      email: string
+      phone: string
+      role: string
+      photo: string
+      status: string
+    }
+  }
   

@@ -9,11 +9,13 @@ import PostulationButton from '../../components/PostulationButton'
 import { Link } from 'expo-router'
 
 export default function Feed() {
-  const posts = usePostStore(state => state.posts);
+  const posts = usePostStore(state => state.posts)
+  const getUserPostulations = usePostStore(state => state.getUserPostulations)
   const { refreshing, fetchPost, onRefresh, handlePostulation } = useFeed()
 
   useEffect(() => {
     fetchPost()
+    getUserPostulations()
   }, [])
 
   return (

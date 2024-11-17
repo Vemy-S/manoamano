@@ -6,6 +6,7 @@ import { Post } from "../types"
 
 export const useFeed = () => {
     const setPost = usePostStore(state => state.setPosts)
+    const getUserPostulations = usePostStore(state => state.getUserPostulations)
 
     const [refreshing, setRefreshing] = useState(false)
 
@@ -19,10 +20,11 @@ export const useFeed = () => {
 
     const onRefresh = async () => {
         setRefreshing(true)
-        await fetchPost()
+        fetchPost()
+        getUserPostulations()
         setRefreshing(false)
         console.log('Refrescar')
-    };
+    }
 
     const handlePostulation = async (post_id: Post['post_id']) => {
         try {
