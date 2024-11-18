@@ -1,11 +1,12 @@
 import { create } from 'zustand';
+import type { PostDetails } from '../types';
 
 interface PostIdStore {
-  postId: number | null;
-  setPostId: (id: number) => void;
+  post: PostDetails | null 
+  setPost: (post: any) => void
 }
 
 export const usePostIdStore = create<PostIdStore>((set) => ({
-  postId: null,
-  setPostId: (id) => set({ postId: id }),
+  post: null,
+  setPost: (post) => set({ post }),
 }));
