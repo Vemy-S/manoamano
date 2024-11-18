@@ -1,41 +1,34 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import { View, TextInput, ScrollView, Text, ActivityIndicator, StyleSheet, TouchableWithoutFeedback, Keyboard, TouchableOpacity } from 'react-native';
-import { Search } from 'lucide-react-native'
-import { useSearchStore } from '../../zustand/useSearchStore'
-import useFilteredPost from '../../hooks/useFilteredPost'
-import { useRouter } from 'expo-router'
+import { Search } from 'lucide-react-native';
+import useFilteredPost from '../../hooks/useFilteredPost';
+import { Link } from 'expo-router';
 
 const SearchComponent: React.FC = () => {
-  const [isSearchActive, setIsSearchActive] = useState(false)
-  const setSearchQuery = useSearchStore((state) => state.setSearchQuery)
-  const searchQuery = useSearchStore((state) => state.searchQuery)
-  const { filteredPosts, loading, error } = useFilteredPost()
-  const router = useRouter()
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchActive, setIsSearchActive] = useState(false);
+  const { filteredPosts, loading, error } = useFilteredPost(searchQuery);
 
   const handleFocus = () => {
-    setIsSearchActive(true)
+    setIsSearchActive(true);
   };
 
   const handleBlur = () => {
-    setIsSearchActive(false)
-    Keyboard.dismiss()
+    setIsSearchActive(false);
+    Keyboard.dismiss();
   };
 
   const handleChangeText = (text: string) => {
-    setSearchQuery(text)
-    setIsSearchActive(text.length > 0)
-  };
-
-  const handlePostPress = (postId: number) => {
-    router.push(`/${postId}`)
+    setSearchQuery(text);
+    setIsSearchActive(text.length > 0);
   };
 
   if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />
+    return <ActivityIndicator size="large" color="#0000ff" />;
   }
 
   if (error) {
-    return <Text style={styles.errorText}>Error: {error}</Text>
+    return <Text style={styles.errorText}>Error: {error}</Text>;
   }
 
   return (
@@ -56,16 +49,18 @@ const SearchComponent: React.FC = () => {
           <ScrollView style={styles.scrollView}>
             <Text style={styles.listHeader}>Resultados de búsqueda</Text>
             {filteredPosts.slice(0, 4).map((item) => (
-              <TouchableOpacity key={item.post_id} onPress={() => handlePostPress(item.post_id)}>
-                <Text style={styles.postItem}>{item.title}</Text>
-              </TouchableOpacity>
+              <Link key={item.post_id} href={`/${item.post_id}`} asChild>
+                <TouchableOpacity>
+                  <Text style={styles.postItem}>{item.title}</Text>
+                </TouchableOpacity>
+              </Link>
             ))}
           </ScrollView>
         )}
       </View>
     </TouchableWithoutFeedback>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -89,8 +84,8 @@ const styles = StyleSheet.create({
     maxHeight: 200,
     backgroundColor: '#fff',
     borderRadius: 10,
-    elevation: 5, 
-    shadowColor: '#000', 
+    elevation: 5, // Para sombra en Android
+    shadowColor: '#000', // Para sombra en iOS
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
@@ -112,6 +107,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 20,
   },
-})
+});
 
-export default SearchComponent
+export default SearchComponent;
