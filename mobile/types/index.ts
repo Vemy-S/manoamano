@@ -8,6 +8,7 @@ export interface DraftUser {
 export interface User extends DraftUser {
     readonly user_id: number | null
     photo: string | null
+    status: string
 }
 
 type PostType = "OFFER" | "REQUEST"
@@ -41,43 +42,39 @@ export interface Post extends DraftPost {
     postulations: []
 }
 
-export type PostulationDetail = {
-    postulation_id: number
+interface Review {
+    review_id: number
     user_id: number
-    post_id: number
-    status: string
-    createdAt: string
-    updatedAt: string
-    post: {
-      post_id: number
-      title: string
-      description: string
-      type: string
-      post_status: string
-      user_id: number
-      number_of_postulations: number
-      max_postulations: number
-      tags: string
-      createdAt: string
-      updatedAt: string
-      user: { // Creador del post
-        user_id: number
-        fullname: string
-        email: string
-        phone: string
-        role: string
-        photo: string
-        status: string
-      }
-    }
-    user: { // Postulador del post
-      user_id: number
-      fullname: string
-      email: string
-      phone: string
-      role: string
-      photo: string
-      status: string
-    }
+    calification: number
+    comment: string
+    createdAt: Date
+    updatedAt: Date
+}
+
+  interface Postulation {
+    postulacion_id: number
+    usuario_id: number
+    publicacion_id: number
+    estado: string
+    fechaCreacion: Date
+    fechaActualizacion: Date
   }
+  
+export interface PostDetails {
+    post_id: number
+    title: string
+    type: string
+    description: string
+    user_id: number
+    status: string
+    postulation_count: number
+    maxPostulations: number
+    tags: string[]
+    createdAt: Date
+    updatedAt: Date
+    user: User
+    review: any[]
+    postulations: Postulation[]
+}
+
   

@@ -3,6 +3,7 @@ import type { DraftPost, Post } from '../types';
 
 export const createPost = async (postData: DraftPost) => {
   try {
+      console.log(postData)
       const response = await api.post('/post/create', postData, {
           withCredentials: true
       })
@@ -14,15 +15,17 @@ export const createPost = async (postData: DraftPost) => {
   }
 }
 
-export const getPostById = async (postId: number): Promise<Post> => {
+export const getPostById = async (postId: number) => {
     try {
-      const response = await api.get(`/post/${postId}`);
-      return response.data;
+      const response = await api.get(`/post/get/${postId}`, {
+        withCredentials: true
+      })
+      return response.data
     } catch (error) {
-      console.error('Error fetching post details:', error);
-      throw error;
+      console.error('Error fetching post details:', error)
+      throw error
     }
-  };
+}
 
 export const getPosts = async () => {
   try {
