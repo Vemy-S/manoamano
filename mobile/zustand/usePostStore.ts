@@ -1,13 +1,12 @@
 import { create } from "zustand"
-import type { Post, PostulationDetail } from '../types'
+import type { Post, PostDetails } from '../types'
 import { getPosts, getUserPostulations } from "../services/posts"
 
 type usePostStore = {
-    userPostulations: PostulationDetail[]
+    userPostulations: PostDetails[]
     posts: Post[]
     setPosts: () => Promise<void>
     getUserPostulations: () => Promise<void>
-
 }
 
 export const usePostStore = create<usePostStore>((set)=> ({

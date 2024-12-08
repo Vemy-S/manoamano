@@ -31,6 +31,7 @@ export const useFeed = () => {
             const response = await postulation(post_id)
             if (response.status === 200) {
                 Alert.alert('Postulación realizada')
+                onRefresh()
             } else if (response.status === 400) {
                 const errorMsg = 'Ya te has postulado en esta publicación'
                 Alert.alert('Error', errorMsg)

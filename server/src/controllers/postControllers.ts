@@ -285,3 +285,43 @@ export const getUserPostulations = async (req: customRequest, res: Response) => 
         res.status(500).json({ error: "Internal server error" })
     }
 }
+
+export const removePostulation = async (req: customRequest, res: Response) => {
+    const { usuario_id } = req.user
+    const { id } = req.params
+    try {
+        const post_id = Number(id)
+
+        if (!post_id) {
+            res.status(400).json({ error: "Post ID is required" })
+            return
+        }
+
+        const existPostulation = await prisma.postulacion.findFirst({
+            where: { usuario_id, publicacion_id: post_id },
+        });
+
+        if (!existPostulation) {
+            res.status(404).json({ error: "Postulation not found for this post" })
+            return
+        }
+
+        await prisma.postulacion.delete({
+            where: { postulacion_id: existPostulation.postulacion_id },
+        })
+
+        await prisma.publicacion.update({
+            where: { publicacion_id: post_id },
+            data: {
+                cantidad_postulaciones: { decrement: 1 },
+            },
+        })
+
+        res.status(200).json({ message: "Postulation removed successfully" })
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({
+            error: "Error removing the postulation",
+        })
+    }
+}

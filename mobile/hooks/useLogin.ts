@@ -8,6 +8,7 @@ export const useLogin = () => {
 
     const router = useRouter()
 
+    const [error, setError] = useState('')
     const [showPassword, setShowPassword] = useState(false)
     const [formValues, setFormValues] = useState({
         email: '',
@@ -22,17 +23,24 @@ export const useLogin = () => {
     }
 
     const handleSubmit = async () => {
+        let newError = ''
         const result = await login(formValues.email, formValues.password)
+        console.log(result?.data.error)
+        if(result?.status !== 200){
+            newError = "Credenciales incorrectas"
+            setError(newError)
+        }
         if(result?.status !== 200) return
-        console.log('Probando el result po', result.status)
+       
         setUser(result.data)
         router.push('/feed')
-        
     }
 
+   
     return {
         formValues,
         showPassword,
+        error,
         handleSubmit,
         handleInputChange,
         setShowPassword
