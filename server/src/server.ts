@@ -8,6 +8,7 @@ import cors from 'cors'
 import corsOptions from './config/corsOptions'
 import postRoutes from './routes/postRoutes'
 import reviewRoutes from './routes/reviewRoutes'
+import deviceRoutes from './routes/authTestRoutes'
 
 const app = express()
 
@@ -21,5 +22,6 @@ app.use('/api/auth', authRoutes)
 app.use('/api/user', userRoutes)
 app.use('/api/post', postRoutes)
 app.use('/api/review', reviewRoutes)
+app.use('/api/device', deviceRoutes)
 
 export default app

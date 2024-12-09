@@ -2,6 +2,7 @@ import { Response, Request } from "express"
 import bcrypt from 'bcrypt'
 import prisma from "../config/prismaconfig"
 import createToken from "../libs/jwt"
+import convertDevice from "../utils/convertDevice"
 
 export const register = async (req: Request, res: Response): Promise<void> => {
     const { email, fullname, phone, password } = req.body
@@ -50,14 +51,28 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 }
 
 export const login = async (req: Request, res: Response): Promise<void> => {
-    const { email, password } = req.body
+    const { 
+        email,
+        password,
+        device_identifier,
+        platform,
+        device_type,
+        device_version
+    } = req.body
+
     try {
+        console.log(platform)
+        console.log(device_identifier)
+        console.log(device_version)
+
+        const device_name = convertDevice(device_type)
+
         const user = await prisma.usuario.findUnique({
             where: { correo: email } 
         })
 
         if (!user) {
-            res.status(404).json({ error: "User not found" });
+            res.status(404).json({ error: "User not found" })
             return
         }
 
@@ -66,6 +81,39 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         if (!isMatch) {
             res.status(400).json({ error: "Invalid password" })
             return
+        }
+
+        const existingDevice = await prisma.dispositivo.findFirst({
+            where: { 
+                usuario_id: user.usuario_id,
+                identificador_dispositivo: device_identifier, 
+                plataforma: platform,
+                tipo_dispositivo: device_name,
+                version_dispositivo: device_version
+            }
+        })
+
+        if (!existingDevice) {
+            const deviceCount = await prisma.dispositivo.count({
+                where: {
+                    usuario_id: user.usuario_id
+                }
+            })
+
+            if (deviceCount >= 3) {
+                res.status(400).json({ message: "Maximum devices reached" })
+                return
+            }
+
+            await prisma.dispositivo.create({
+                data: {
+                    usuario_id: user.usuario_id,
+                    identificador_dispositivo: device_identifier,
+                    plataforma: platform,
+                    tipo_dispositivo: device_name,
+                    version_dispositivo: device_version
+                }
+            })
         }
 
         const token = await createToken(user)
@@ -81,11 +129,13 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         }
 
         res.json(userResponse)
+
     } catch (error) {
         console.error(error)
         res.status(500).json({ error: "Internal server error" })
     }
 }
+
 
 export const logout = async (req: Request, res: Response): Promise<void> => {
     try {
