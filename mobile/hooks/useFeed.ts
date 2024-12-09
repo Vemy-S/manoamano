@@ -29,11 +29,15 @@ export const useFeed = () => {
     const handlePostulation = async (post_id: Post['post_id']) => {
         try {
             const response = await postulation(post_id)
+            console.log(response.data.error)
             if (response.status === 200) {
                 Alert.alert('Postulación realizada')
                 onRefresh()
-            } else if (response.status === 400) {
+            } else if (response.data.error === 'User has already applied to this post') {
                 const errorMsg = 'Ya te has postulado en esta publicación'
+                Alert.alert('Error', errorMsg)
+            } else if (response.data.error === 'You already have the maximum number of publications') {
+                const errorMsg = "Alcanzaste el maximo de postulaciones activas"
                 Alert.alert('Error', errorMsg)
             } else {
                 Alert.alert('Error', 'Ocurrió un problema inesperado. Inténtalo más tarde.')

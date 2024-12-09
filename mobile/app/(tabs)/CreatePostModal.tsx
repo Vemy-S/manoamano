@@ -15,7 +15,7 @@ const categories = [
 ]
 
 export default function CreatePostModal({ isVisible, onClose }: any) {
-  const  {handlePost, handleSubmit, postValues} = usePost()
+  const  { handlePost, handleSubmit, postValues } = usePost()
 
   const [category, setCategory] = useState('')
   const [isOffer, setIsOffer] = useState(true)

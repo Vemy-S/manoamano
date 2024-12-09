@@ -45,7 +45,6 @@ export const postulation = async (id: Post['post_id']) => {
               return status < 500
           }
       })
-
       return {
           status: response.status,
           data: response.data
@@ -72,6 +71,20 @@ export const removePostulation = async (id: Post['post_id']) => {
     })
 
     return response.data
+  } catch (error) {
+    throw error
+  }
+}
+
+export const deletePost = async (id: Post['post_id']) => {
+  try {
+    const response = await api.delete(`/post/delete/${id}`, {
+      withCredentials: true,
+    })
+
+    return {
+      status: response.status
+    }
   } catch (error) {
     throw error
   }

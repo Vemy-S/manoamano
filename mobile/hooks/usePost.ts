@@ -2,8 +2,11 @@ import { useState } from "react"
 import { Alert } from "react-native"
 import { createPost } from "../services/posts"
 import type { DraftPost } from "../types"
+import { useFeed } from "./useFeed"
 
 export const usePost = () => {
+
+    const { onRefresh } = useFeed()
     const [postValues, setPostValues] = useState<DraftPost>({
         title: '',
         description: '',
@@ -25,6 +28,7 @@ export const usePost = () => {
         console.log('Submitting post:', { postValues })
     
         await createPost(postValues)
+        onRefresh()
         Alert.alert('Has publicado')
       }
 

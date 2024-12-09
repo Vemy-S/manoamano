@@ -26,6 +26,8 @@ model Usuario {
   fechaCreacion         DateTime          @default(now())
   fechaActualizacion    DateTime          @updatedAt
   ultimoInicio          DateTime?
+  publicacionesActivas  Int               @default(0)
+  postulacionesActivas  Int               @default(0)
 }
 
 model Publicacion {

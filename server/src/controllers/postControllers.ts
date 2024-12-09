@@ -2,14 +2,23 @@ import prisma from '../config/prismaconfig';
 import { Response } from 'express';
 import { customRequest } from '../middleware/authenticate';
 import convertType from '../utils/convertType';
-import { EstadoPostulacion } from '@prisma/client';
 
 export const createPost = async (req: customRequest, res: Response) => {
     const { title, description, type } = req.body
     const { usuario_id } = req.user
     try {
-        console.log(usuario_id)
-        console.log(title, description, type)
+
+        const user = await prisma.usuario.findUnique({
+            where: { usuario_id }
+        })
+
+        if(user.publicacionesActivas >= 2){
+            res.status(400).json({
+                error: "You already have the maximum number of publications"
+            })
+            return
+        }
+        
         if (!title || !description || !type) {
             res.status(400).json({ error: 'Title, description, and type are required' });
             return 
@@ -25,7 +34,14 @@ export const createPost = async (req: customRequest, res: Response) => {
                 tipo: correctType
             }
         })
-    
+
+        await prisma.usuario.update({
+            where: { usuario_id },
+            data:{
+                publicacionesActivas: user.publicacionesActivas + 1
+            }
+        })
+
         const postResponse = {
             post_id: newPost.publicacion_id,
             user_id: newPost.usuario_id,
@@ -98,9 +114,20 @@ export const postulationPost = async (req:customRequest, res:Response) => {
     try {
         const post_id = Number(id)
 
+        const user = await prisma.usuario.findUnique({
+            where: { usuario_id }
+        })
+
         if(!post_id){
             res.status(400).json({
                 error: "Error: no post ID provided"
+            })
+            return
+        }
+
+        if(user.postulacionesActivas >= 5){
+            res.status(400).json({
+                error: "You already have the maximum number of publications"
             })
             return
         }
@@ -150,6 +177,11 @@ export const postulationPost = async (req:customRequest, res:Response) => {
             data: {
                 cantidad_postulaciones: { increment: 1 }
             }
+        })
+
+        await prisma.usuario.update({
+            where: { usuario_id },
+            data: { postulacionesActivas: user.postulacionesActivas + 1 }
         })
 
         res.status(200).json(postulation)
@@ -297,9 +329,13 @@ export const removePostulation = async (req: customRequest, res: Response) => {
             return
         }
 
+        const user = await prisma.usuario.findUnique({
+            where: { usuario_id }
+        })
+        
         const existPostulation = await prisma.postulacion.findFirst({
             where: { usuario_id, publicacion_id: post_id },
-        });
+        })
 
         if (!existPostulation) {
             res.status(404).json({ error: "Postulation not found for this post" })
@@ -317,11 +353,66 @@ export const removePostulation = async (req: customRequest, res: Response) => {
             },
         })
 
+        await prisma.usuario.update({
+            where: { usuario_id },
+            data: { postulacionesActivas: user.postulacionesActivas - 1 }
+        })
+
         res.status(200).json({ message: "Postulation removed successfully" })
     } catch (error) {
         console.error(error)
         res.status(500).json({
             error: "Error removing the postulation",
         })
+    }
+}
+
+export const deletePost = async (req: customRequest, res: Response) => {
+    const { usuario_id } = req.user
+    const { id } = req.params
+
+    try {
+        const post_id = Number(id)
+
+        const user = await prisma.usuario.findUnique({
+            where: { usuario_id }
+        })
+
+        if (!post_id) {
+            res.status(400).json({ error: "Post ID is required" })
+            return
+        }
+
+        const post = await prisma.publicacion.findUnique({
+            where: { publicacion_id: post_id }
+        })
+
+        if (!post) {
+            res.status(404).json({ error: "Post not found" })
+            return
+        }
+
+        if (post.usuario_id !== usuario_id) {
+            res.status(403).json({ error: "You are not authorized to delete this post" })
+            return
+        }
+
+        await prisma.postulacion.deleteMany({
+            where: { publicacion_id: post_id }
+        })
+
+        await prisma.publicacion.delete({
+            where: { publicacion_id: post_id }
+        })
+
+        await prisma.usuario.update({
+            where: { usuario_id },
+            data: { publicacionesActivas: user.publicacionesActivas - 1 }
+        })
+
+        res.status(200).json({ message: "Post deleted successfully" })
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ error: "Error deleting the post" })
     }
 }
