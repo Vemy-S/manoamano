@@ -8,7 +8,7 @@ import cors from 'cors'
 import corsOptions from './config/corsOptions'
 import postRoutes from './routes/postRoutes'
 import reviewRoutes from './routes/reviewRoutes'
-import deviceRoutes from './routes/authTestRoutes'
+import deviceRoutes from './routes/deviceRoutes'
 
 const app = express()
 
