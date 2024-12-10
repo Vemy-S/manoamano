@@ -84,8 +84,8 @@ const styles = StyleSheet.create({
     maxHeight: 200,
     backgroundColor: '#fff',
     borderRadius: 10,
-    elevation: 5, // Para sombra en Android
-    shadowColor: '#000', // Para sombra en iOS
+    elevation: 5,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,

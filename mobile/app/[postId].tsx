@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { View, Text, SafeAreaView, ScrollView, TextInput, TouchableOpacity, StatusBar } from 'react-native';
 import { useLocalSearchParams, Link } from 'expo-router';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, TextInput, TouchableOpacity, StatusBar } from 'react-native';
 import { X, User, Calendar, Tag, MessageCircle } from 'lucide-react-native';
 import { usePostIdStore } from '../zustand/usePostIdStore';
 import { getPostById } from '../services/posts';
@@ -25,43 +25,43 @@ export default function Post() {
   }, []);
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle="light-content" />
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Link href="/feed" style={styles.backButton}>
-            <X color="#fff" size={24} />
+    <SafeAreaView className="flex-1 bg-white">
+      <StatusBar barStyle="dark-content" />
+      <View className="flex-1 bg-white">
+        <View className="flex-row items-center p-5 pt-[30px] border-b border-purple-100">
+          <Link href="/feed" className="p-2.5">
+            <X color="#6B46C1" size={24} />
           </Link>
-          <Text style={styles.headerTitle}>Detalles del Post</Text>
+          <Text className="text-purple-800 text-xl font-bold ml-5">Detalles del Post</Text>
         </View>
 
-        <ScrollView contentContainerStyle={styles.scrollViewContent}>
-          <View style={styles.card}>
-            <View style={styles.cardContent}>
-              <View style={styles.titleContainer}>
-                <Text style={styles.title}>{postById?.title}</Text>
-                <View style={styles.typeContainer}>
-                  <Tag color="#4A5568" size={24} />
-                  <Text style={styles.typeText}>{postById?.type}</Text>
+        <ScrollView className="flex-grow p-5">
+          <View className="bg-white rounded-[15px] shadow-sm flex-1 justify-between border border-purple-100">
+            <View className="p-5 flex-[0.6]">
+              <View className="flex-row justify-between items-center mb-2.5">
+                <Text className="text-2xl font-bold text-gray-900 flex-1">{postById?.title}</Text>
+                <View className="flex-row items-center bg-purple-50 px-2.5 py-1.5 rounded-[15px]">
+                  <Tag color="#6B46C1" size={24} />
+                  <Text className="ml-1.5 text-purple-800 text-sm font-bold">{postById?.type}</Text>
                 </View>
               </View>
-              <Text style={styles.description}>{postById?.description}</Text>
+              <Text className="text-base text-gray-700 mb-5">{postById?.description}</Text>
 
-              <View style={styles.separator} />
+              <View className="h-px bg-purple-100 my-5" />
 
-              <View style={styles.infoContainer}>
-                <View style={styles.infoItem}>
-                  <User color="#4A5568" size={30} />
-                  <Text style={styles.infoText}>{postById?.user?.fullname}</Text>
+              <View className="mt-1.5">
+                <View className="flex-row items-center mb-3.5">
+                  <User color="#6B46C1" size={30} />
+                  <Text className="ml-2.5 text-gray-700 text-base">{postById?.user?.fullname}</Text>
                 </View>
-                <View style={styles.infoItem}>
-                  <Calendar color="#4A5568" size={30} />
-                  <Text style={styles.infoText}>{postById?.status}</Text>
+                <View className="flex-row items-center mb-3.5">
+                  <Calendar color="#6B46C1" size={30} />
+                  <Text className="ml-2.5 text-gray-700 text-base">{postById?.status}</Text>
                 </View>
               </View>
             </View>
 
-            <View style={styles.postulationButtonContainer}>
+            <View className="p-5 border-t border-purple-100 mt-auto">
               <PostulationButton
                 applications={postById?.postulation_count || 0}
                 maxPostulations={postById?.maxPostulations || 0}
@@ -72,11 +72,11 @@ export default function Post() {
           </View>
         </ScrollView>
 
-        <View style={styles.commentSection}>
-          <View style={styles.commentInputContainer}>
-            <MessageCircle color="#4A5568" size={20} style={styles.commentIcon} />
+        <View className="p-5 bg-white border-t border-purple-100">
+          <View className="flex-row items-center bg-purple-50 rounded-[25px] px-3.5 mb-2.5">
+            <MessageCircle color="#6B46C1" size={20} className="mr-2.5" />
             <TextInput
-              style={styles.commentInput}
+              className="flex-1 h-[50px] text-base text-gray-700"
               placeholder="Escribe una reseña del servicio"
               placeholderTextColor="#A0AEC0"
               value={comment}
@@ -84,151 +84,13 @@ export default function Post() {
             />
           </View>
           <TouchableOpacity
-            style={styles.sendButton}
+            className="bg-purple-600 rounded-[25px] py-3 items-center"
             onPress={() => console.log("Comentario:", comment)}
           >
-            <Text style={styles.sendButtonText}>Enviar</Text>
+            <Text className="text-white text-base font-bold">Enviar</Text>
           </TouchableOpacity>
         </View>
       </View>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#2D3748',
-  },
-  container: {
-    flex: 1,
-    backgroundColor: '#2D3748',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 20,
-    paddingTop: StatusBar.currentHeight || 0,
-    backgroundColor: '#1A202C',
-  },
-  backButton: {
-    padding: 10,
-  },
-  headerTitle: {
-    color: '#fff',
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginLeft: 20,
-  },
-  scrollViewContent: {
-    flexGrow: 1,
-    padding: 20,
-  },
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 15,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-    flex: 1,
-    justifyContent: 'space-between',
-  },
-  cardContent: {
-    padding: 20,
-    flex: 0.6,
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#2D3748',
-    flex: 1,
-  },
-  description: {
-    fontSize: 16,
-    color: '#4A5568',
-    marginBottom: 20,
-  },
-  separator: {
-    height: 1,
-    backgroundColor: '#E2E8F0',
-    marginVertical: 20,
-  },
-  infoContainer: {
-    marginTop: 5,
-  },
-  infoItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 15,
-  },
-  infoText: {
-    marginLeft: 10,
-    color: '#4A5568',
-    fontSize: 16,
-  },
-  postulationButtonContainer: {
-    padding: 20,
-    borderTopWidth: 1,
-    borderTopColor: '#E2E8F0',
-    marginTop: 'auto',
-  },
-  commentSection: {
-    padding: 20,
-    backgroundColor: '#1A202C',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-  },
-  commentInputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#2D3748',
-    borderRadius: 25,
-    paddingHorizontal: 15,
-    marginBottom: 10,
-  },
-  commentIcon: {
-    marginRight: 10,
-  },
-  commentInput: {
-    flex: 1,
-    height: 50,
-    fontSize: 16,
-    color: '#fff',
-  },
-  sendButton: {
-    backgroundColor: '#4299E1',
-    borderRadius: 25,
-    paddingVertical: 12,
-    alignItems: 'center',
-  },
-  sendButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  typeContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#EDF2F7',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 15,
-  },
-  typeText: {
-    marginLeft: 5,
-    color: '#4A5568',
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-});
