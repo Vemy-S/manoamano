@@ -30,7 +30,7 @@ export default function RegistrationScreen() {
     
       <View className="px-6 pt-4">
 
-        <Text className='text-center text-4xl tracking-[4px] text-amber-900'>Mano a Mano</Text>
+        <Text className='text-center text-4xl tracking-[4px] text-indigo-900'>Share Services</Text>
         
         <AuthImage/>
 

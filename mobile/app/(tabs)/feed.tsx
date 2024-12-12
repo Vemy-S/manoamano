@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { View, Text, ScrollView, TouchableOpacity, SafeAreaView, RefreshControl, Alert } from 'react-native'
-import { Trash2, Star } from 'lucide-react-native'
+import { Trash2 } from 'lucide-react-native'
 import { usePostStore } from '../../zustand/usePostStore'
 import { useFeed } from '../../hooks/useFeed'
 import HeaderFeed from '../../components/header/HeaderFeed'
@@ -30,7 +30,7 @@ export default function Feed() {
         { text: "Cancelar", style: "cancel" },
         { 
           text: "Eliminar", 
-          onPress:  async() => {
+          onPress:  async () => {
             const result = await deletePost(post_id)
             if(result.status === 200){
               await onRefresh()

@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt'
 import prisma from "../config/prismaconfig"
 import createToken from "../libs/jwt"
 import convertDevice from "../utils/convertDevice"
+import { customRequest } from "../middleware/authenticate"
 
 export const register = async (req: Request, res: Response): Promise<void> => {
     const { email, fullname, phone, password } = req.body
@@ -27,13 +28,6 @@ export const register = async (req: Request, res: Response): Promise<void> => {
             }
         })
 
-        const token = await createToken({
-            usuario_id: createdUser.usuario_id,
-            rol: createdUser.rol,
-            correo: email,          
-            nombre_completo: fullname,
-        })
-
         const userResponse = {
             user_id: createdUser.usuario_id,
             fullname: createdUser.nombre_completo,
@@ -42,7 +36,6 @@ export const register = async (req: Request, res: Response): Promise<void> => {
             role: createdUser.rol
         }
 
-        res.cookie('token', token, { httpOnly: true })
         res.status(201).json(userResponse)
     } catch (error) {
         console.error(error)
@@ -61,10 +54,6 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     } = req.body
 
     try {
-        console.log(platform)
-        console.log(device_identifier)
-        console.log(device_version)
-
         const device_name = convertDevice(device_type)
 
         const user = await prisma.usuario.findUnique({
@@ -83,7 +72,21 @@ export const login = async (req: Request, res: Response): Promise<void> => {
             return
         }
 
-        const existingDevice = await prisma.dispositivo.findFirst({
+        const activeDevice = await prisma.dispositivo.findFirst({
+            where: {
+                usuario_id: user.usuario_id,
+                token_dispositivo: {
+                    not: "",  
+                }
+            }
+        })
+
+        if (activeDevice) {
+            res.status(400).json({ message: "User already logged in on another device" })
+            return
+        }
+
+        let existingDevice = await prisma.dispositivo.findFirst({
             where: { 
                 usuario_id: user.usuario_id,
                 identificador_dispositivo: device_identifier, 
@@ -94,18 +97,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         })
 
         if (!existingDevice) {
-            const deviceCount = await prisma.dispositivo.count({
-                where: {
-                    usuario_id: user.usuario_id
-                }
-            })
-
-            if (deviceCount >= 3) {
-                res.status(400).json({ message: "Maximum devices reached" })
-                return
-            }
-
-            await prisma.dispositivo.create({
+            existingDevice = await prisma.dispositivo.create({
                 data: {
                     usuario_id: user.usuario_id,
                     identificador_dispositivo: device_identifier,
@@ -116,7 +108,13 @@ export const login = async (req: Request, res: Response): Promise<void> => {
             })
         }
 
-        const token = await createToken(user)
+        const token = await createToken(user, existingDevice.dispositivo_id)
+
+        await prisma.dispositivo.update({
+            where: { dispositivo_id: existingDevice.dispositivo_id },
+            data: { token_dispositivo: String(token) }
+        })
+
         res.cookie('token', token, { httpOnly: true })
 
         const userResponse = {
@@ -125,7 +123,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
             email: user.correo,
             phone: user.telefono,
             photo: user.foto,
-            token
+            device_id: existingDevice.dispositivo_id
         }
 
         res.json(userResponse)
@@ -136,18 +134,75 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     }
 }
 
-
-export const logout = async (req: Request, res: Response): Promise<void> => {
+export const logout = async (req: customRequest, res: Response): Promise<void> => {
+    const { token } = req.cookies
     try {
+
+        const deviceToLogout = await prisma.dispositivo.findUnique({
+            where: {
+                token_dispositivo: token
+            }
+        })
+
+        if(!deviceToLogout){
+            res.status(404).json({
+                error: "Device not found"
+            })
+            return
+        }
+
+        await prisma.dispositivo.delete({
+            where: {
+                dispositivo_id: deviceToLogout.dispositivo_id
+            }
+        })
+        
         res.cookie('token', '', {
             httpOnly: true,
             expires: new Date(0)
         })
         res.status(200).json({
-            message: "Logged out successfully"
+            message: "Logged out successfully form the device"
         })
+
     } catch (error) {
         console.error(error)
         res.status(500).json({error: "Internal server error"})
+    }
+}
+
+export const logoutExternalDevice = async (req: customRequest, res: Response): Promise<void> => {
+    const { logout_device_id } = req.body
+    const { usuario_id, device_id } = req.user
+    const { token } = req.cookies
+
+    try {
+        console.log("yo", device_id)
+
+        const deviceToLogout = await prisma.dispositivo.findUnique({
+            where: { dispositivo_id: logout_device_id }
+        });
+
+        if (!deviceToLogout) {
+            res.status(404).json({ message: "Device not found" });
+            return
+        }
+
+        if (deviceToLogout.dispositivo_id === device_id) {
+            res.status(400).json({ message: "Cannot log out of your own device" });
+            return
+        }
+
+        console.log('DISPOSITIVO A DESCONECTAR', deviceToLogout.dispositivo_id);
+        console.log('DISPOSITIVO MIOOOO', device_id)
+
+        await prisma.dispositivo.delete({
+            where: { dispositivo_id: logout_device_id }
+        })
+
+        res.status(200).json({ message: "Device logged out successfully", logout_device_id })
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal server error" })
     }
 }

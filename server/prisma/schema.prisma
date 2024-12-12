@@ -39,7 +39,8 @@ model Dispositivo {
   plataforma                String
   tipo_dispositivo          String   @default("UNKNOWN")
   version_dispositivo       String   @default("1.0.0")
-  fechaCreacion             DateTime @default(now())
+  fechaInicioSesion         DateTime @default(now())
+  token_dispositivo         String   @default("") @unique
 }
 
 model Publicacion {

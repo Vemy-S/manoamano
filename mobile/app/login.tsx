@@ -25,11 +25,10 @@ export default function login() {
         href='/'
       />
 
-      
       <View className="px-6 pt-4">
+        <Text className='text-center text-4xl tracking-[4px] text-indigo-900'>Bienvenid@ a Share Services</Text>
  
         <AuthImage/>
-
 
         <View className="space-y-4 gap-3">
 
@@ -78,17 +77,7 @@ export default function login() {
           linkText='Registrate'
         />
 
-    
       </View>
     </View>
   )
 }
-
-
-
-{/* <Link href="/register">Ir a registrarse</Link>
-      <Link href="/createPost">Ir a crear post</Link>
-      <Link href="/reviews">reviews</Link>
-      <Link href="/Feed">Inicio</Link>
-      <Link href="/CreatePostModal">Modal</Link>
-      <Link href="/RegisterScreen">prueba</Link> */}

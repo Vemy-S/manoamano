@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { register } from "../services/auth"
+import { Alert } from "react-native"
 
 export const useRegister = () => {
     const [showPassword, setShowPassword] = useState(false)
@@ -15,13 +16,16 @@ export const useRegister = () => {
     const handleInputChange = (field: keyof typeof formValues, value: string) => {
       setFormValues(prev => ({
         ...prev,
-        [field]: field === 'phone'
-          ? value.replace(/[^0-9]/g, '') 
+        [field]: field === 'fullname'
+          ? value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚ\s]/g, '')
+          : field === 'phone'
+          ? value.replace(/[^0-9]/g, '')
           : field === 'email'
           ? value.toLocaleLowerCase()
           : value 
       }))
     }
+
     const validateForm = () => {
       let valid = true
       let newError = ''
@@ -46,21 +50,20 @@ export const useRegister = () => {
         valid = false
         newError = 'La contraseña debe tener al menos 6 caracteres'
       }
-  
       setError(newError)
-  
       return valid
     }
 
-    const handleSubmit =  async () => {
+    const handleSubmit = async () => {
       let newError = ''
-      if(validateForm()){
+      if (validateForm()) {
         const response = await register(formValues)
-        if(response?.data.error === "User already exists"){
+        if (response?.data.error === 'User already exists') {
           newError = 'El correo ya fue utilizado'
           setResponseMessage(newError)
+        } else {
+          Alert.alert('Cuenta creada con éxito')
         }
-        
       }
     }
 

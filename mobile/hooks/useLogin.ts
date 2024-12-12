@@ -25,7 +25,12 @@ export const useLogin = () => {
     const handleSubmit = async () => {
         let newError = ''
         const result = await login(formValues.email, formValues.password)
-        console.log(result?.data.error)
+        console.log(result?.data)
+        if(result?.data.message === "User already logged in on another device"){
+            newError = "Ya estás logeado en otro dispositivo"
+            setError(newError)
+            return
+        }
         if(result?.status !== 200){
             newError = "Credenciales incorrectas"
             setError(newError)

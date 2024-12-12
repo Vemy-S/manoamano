@@ -4,7 +4,10 @@ import type { DraftPost, Post } from '../types';
 export const createPost = async (postData: DraftPost) => {
   try {
       const response = await api.post('/post/create', postData, {
-          withCredentials: true
+          withCredentials: true,
+          validateStatus: (status) => {
+            return status < 500
+          }
       })
       console.log(response)
       return response.data

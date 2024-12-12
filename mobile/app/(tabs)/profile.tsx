@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, Text, Image, ScrollView, TouchableOpacity, SafeAreaView } from 'react-native'
-import { ChevronRight, Settings, User2, X, MoreVertical, HandHelping, Star, Newspaper, LogOut } from 'lucide-react-native'
+import { ChevronRight, Settings, User2, X, MoreVertical, HandHelping, Star, Newspaper, LogOut, Smartphone } from 'lucide-react-native'
 import MenuItem from '../../components/MenuItem'
 import { Link, useRouter } from 'expo-router'
 import { useAuthStore } from '../../zustand/useAuthStore'
@@ -15,6 +15,10 @@ export default function Profile() {
   const handleLogout = async () => {
     await logout()
     router.push('/login')
+  }
+
+  const handleDevices = async () => {
+    router.push('/DevicesScreen')
   }
 
   return (
@@ -71,6 +75,16 @@ export default function Profile() {
             icon={<Settings color="#8B5CF6" size={20} />}
             title="Configuracion"
           />
+
+
+          <TouchableOpacity
+            onPress={handleDevices}
+            className="flex-row items-center py-4 border-t border-gray-200"
+          >
+            <Smartphone color="#8B5CF6" size={20} />
+            <Text className="text-gray-900 ml-3 flex-1">Dispositivos conectados</Text>
+            <ChevronRight color="#8B5CF6" size={20} />
+          </TouchableOpacity>
 
           <TouchableOpacity 
             onPress={handleLogout}
