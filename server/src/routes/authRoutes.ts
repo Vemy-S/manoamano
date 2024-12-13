@@ -10,4 +10,6 @@ router.post('/login', login)
 router.post('/logout', authenticate, logout)
 router.post('/logout-external', authenticate, logoutExternalDevice)
 
+
+
 export default router

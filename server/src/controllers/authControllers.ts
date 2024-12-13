@@ -5,6 +5,16 @@ import createToken from "../libs/jwt"
 import convertDevice from "../utils/convertDevice"
 import { customRequest } from "../middleware/authenticate"
 
+export const nombre = (req, res ) => {
+    const { email, phone, password } = req.body
+    try {
+        
+        
+    } catch (error) {
+        
+    }
+}
+
 export const register = async (req: Request, res: Response): Promise<void> => {
     const { email, fullname, phone, password } = req.body
     try {
