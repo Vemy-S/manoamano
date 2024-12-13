@@ -12,7 +12,7 @@ export const createReview = async (postId: number , data: Review) => {
             }
         })
         console.log(response)
-        return response.data
+        return response
     } catch (error) {
         console.error('Error creating post:', error)
         throw error

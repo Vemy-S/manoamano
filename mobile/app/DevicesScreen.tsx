@@ -13,6 +13,8 @@ export default function DevicesScreen() {
   const { onRefresh, refreshing } = useFeed()
   const myDevice = useAuthStore(state => state.user.device_id)
 
+
+
   const fetchDevices = async () => {
     const devices = await getDevices()
     if (devices !== undefined) {

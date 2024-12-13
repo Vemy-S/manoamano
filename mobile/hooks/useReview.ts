@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useLocalSearchParams } from "expo-router"
 import { createReview } from "../services/review"
+import { Alert } from "react-native"
 
 export type Review = {
     comment: string
@@ -27,7 +28,12 @@ export const useReview = () => {
         console.log('Submitting with postId:', postId) 
         console.log('Review Values:', reviewValues)
         const result = await createReview(Number(postId), reviewValues)
-        console.log(result)
+        console.log('probando', result)
+
+        if(result.status === 201){
+            Alert.alert('Has creado una resenia extiosa')
+        }
+        
     }
 
     return {
