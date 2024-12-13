@@ -7,6 +7,7 @@ export interface DraftUser {
 
 export interface User extends DraftUser {
     readonly user_id: number | null
+    readonly device_id: number | null
     photo: string | null
     status: string
 }
@@ -23,7 +24,6 @@ export interface Post extends DraftPost {
     readonly user_id: number
     readonly post_id: number
     status: string
-    favorites: []
     postulation_count: number
     maxPostulations: number
     tags: any[]
@@ -77,5 +77,15 @@ export interface PostDetails {
     review: any[]
     postulations: Postulation[]
 }
+
+export interface Device {
+  device_id: number
+  platform: string
+  deviceIdentifier: string
+  deviceType: string
+  deviceVersion: string
+}
+
+
 
   

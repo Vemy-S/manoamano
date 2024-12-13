@@ -15,7 +15,7 @@ const categories = [
 ]
 
 export default function CreatePostModal({ isVisible, onClose }: any) {
-  const  {handlePost, handleSubmit, postValues} = usePost()
+  const  { handlePost, handleSubmit, postValues } = usePost()
 
   const [category, setCategory] = useState('')
   const [isOffer, setIsOffer] = useState(true)
@@ -31,7 +31,7 @@ export default function CreatePostModal({ isVisible, onClose }: any) {
       <View className="flex-1 justify-end">
         <View className="bg-white rounded-t-3xl shadow-lg p-6 h-5/6">
           <View className="flex-row justify-between items-center mb-6">
-            <Text className="text-2xl font-bold">Crear Publicacion</Text>
+            <Text className="text-2xl font-bold">Publicar servicio</Text>
             <TouchableOpacity onPress={onClose}>
               <X size={24} color="#666" />
             </TouchableOpacity>
@@ -91,7 +91,7 @@ export default function CreatePostModal({ isVisible, onClose }: any) {
             </View> */}
 
             <View className="flex-row justify-between items-center mb-6">
-              <Text className="text-lg font-semibold">Tipo de publicacion:</Text>
+              <Text className="text-lg font-semibold">Opción de servicio:</Text>
               <View className="flex-row items-center">
                 <Text className={`mr-2 ${postValues.type === 'OFFER' ? 'text-gray-600' : 'text-amber-600'}`}>Requiero</Text>
                 <Switch
@@ -104,7 +104,7 @@ export default function CreatePostModal({ isVisible, onClose }: any) {
             </View>
 
             <TouchableOpacity
-              className="bg-amber-600 rounded-full py-3 items-center"
+              className="bg-indigo-600 rounded-full py-3 items-center"
               onPress={handleSubmit}
             >
               <Text className="text-white font-semibold text-lg">Publicar</Text>

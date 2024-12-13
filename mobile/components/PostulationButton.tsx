@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from 'react-native'
+import { View, Text, TouchableOpacity, Alert } from 'react-native'
 import { UserPlus } from 'lucide-react-native'
 import { Post } from '../types'
 
@@ -7,6 +7,8 @@ type PostulationButtonProps = {
     maxPostulations: Post['maxPostulations']
     post_id: Post['post_id']
     handlePostulation: (post_id: Post['post_id']) => void
+    post_owner_id: Post['post_id']
+    user_id: number | null
 }
 
 export default function PostulationButton({
@@ -14,10 +16,20 @@ export default function PostulationButton({
     maxPostulations,
     post_id,
     handlePostulation,
-    } : PostulationButtonProps) {
+    post_owner_id,
+    user_id, 
+}: PostulationButtonProps) {
+  
+  const handleButtonPress = () => {
+    if (post_owner_id === user_id) {
+      Alert.alert('Error', 'No puedes postular a tu propia publicación.');
+      return
+    }
+    handlePostulation(post_id)
+  }
   return (
     <TouchableOpacity 
-      onPress={()=> handlePostulation(post_id)}
+      onPress={handleButtonPress}
       className={`flex-row items-center justify-center px-3 py-2 rounded-full ${
         applications >= maxPostulations ? 'bg-gray-200' : 'bg-purple-100'
       }`}

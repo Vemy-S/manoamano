@@ -1,4 +1,4 @@
-import { View, TextInput, TouchableOpacity } from 'react-native'
+import { View, TextInput, TouchableOpacity, Text } from 'react-native'
 import { Eye, EyeOff } from 'lucide-react-native'
 import Divider from '../components/Divider'
 import BackButton from '../components/BackButton'
@@ -6,19 +6,17 @@ import AuthRedirect from '../components/AuthRedirect'
 import PrimaryButton from '../components/PrimaryButton'
 import AuthImage from '../components/AuthImage'
 import { useLogin } from '../hooks/useLogin'
-import { Link } from 'expo-router'
 
 export default function login() {
   
   const { 
-    handleSubmit,
-    handleInputChange,
     formValues, 
     showPassword,
+    error,
+    handleSubmit,
+    handleInputChange,
     setShowPassword
   } = useLogin()
-
-
 
   return (
     <View className="flex-1 bg-white">
@@ -27,11 +25,10 @@ export default function login() {
         href='/'
       />
 
-      
       <View className="px-6 pt-4">
+        <Text className='text-center text-4xl tracking-[4px] text-indigo-900'>Bienvenid@ a Share Services</Text>
  
         <AuthImage/>
-
 
         <View className="space-y-4 gap-3">
 
@@ -62,9 +59,8 @@ export default function login() {
                 <Eye size={20} color="#666" />
               )}
             </TouchableOpacity>
-            
           </View>
-
+        <Text className='text-red-400 p-1'>{error}</Text>
         </View>
 
         <PrimaryButton
@@ -81,18 +77,7 @@ export default function login() {
           linkText='Registrate'
         />
 
-        <Link href='/ModalProfile'>Probnado algo</Link>
-        
       </View>
     </View>
   )
 }
-
-
-
-{/* <Link href="/register">Ir a registrarse</Link>
-      <Link href="/createPost">Ir a crear post</Link>
-      <Link href="/reviews">reviews</Link>
-      <Link href="/Feed">Inicio</Link>
-      <Link href="/CreatePostModal">Modal</Link>
-      <Link href="/RegisterScreen">prueba</Link> */}

@@ -1,13 +1,25 @@
 import React from 'react'
 import { View, Text, Image, ScrollView, TouchableOpacity, SafeAreaView } from 'react-native'
-import { ChevronRight, Settings, User2, X, MoreVertical, HandHelping, Star, Newspaper } from 'lucide-react-native'
+import { ChevronRight, Settings, User2, X, MoreVertical, HandHelping, Star, Newspaper, LogOut, Smartphone } from 'lucide-react-native'
 import MenuItem from '../../components/MenuItem'
-import { Link } from 'expo-router'
+import { Link, useRouter } from 'expo-router'
 import { useAuthStore } from '../../zustand/useAuthStore'
+import { logout } from '../../services/auth'
 
 export default function Profile() {
 
+
   const user = useAuthStore(state => state.user)
+  const router = useRouter()
+
+  const handleLogout = async () => {
+    await logout()
+    router.push('/login')
+  }
+
+  const handleDevices = async () => {
+    router.push('/DevicesScreen')
+  }
 
   return (
     <SafeAreaView className="flex-1 bg-white">
@@ -28,7 +40,7 @@ export default function Profile() {
           <View className="flex-row items-center mb-6">
 
           <View className="w-9 h-9 bg-purple-100 rounded-full items-center justify-center">
-              <Text className="text-purple-600 font-semibold">{user.fullname}</Text>
+              <Text className="text-purple-600 font-semibold">{user.fullname[0]}</Text>
           </View>
             <View>
               <Text className="text-gray-500 text-sm">Bienvenido</Text>
@@ -64,6 +76,25 @@ export default function Profile() {
             title="Configuracion"
           />
 
+
+          <TouchableOpacity
+            onPress={handleDevices}
+            className="flex-row items-center py-4 border-t border-gray-200"
+          >
+            <Smartphone color="#8B5CF6" size={20} />
+            <Text className="text-gray-900 ml-3 flex-1">Dispositivos conectados</Text>
+            <ChevronRight color="#8B5CF6" size={20} />
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            onPress={handleLogout}
+            className="flex-row items-center py-4 border-t border-gray-200"
+          >
+            <LogOut color="#8B5CF6" size={20} />
+            <Text className="text-gray-900 ml-3 flex-1">Cerrar sesión</Text>
+            <ChevronRight color="#8B5CF6" size={20} />
+          </TouchableOpacity>
+          
         </View>
       </ScrollView>
 

@@ -1,96 +1,123 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, SafeAreaView, ScrollView, TextInput, TouchableOpacity, StatusBar } from 'react-native';
-import { useLocalSearchParams, Link } from 'expo-router';
-import { X, User, Calendar, Tag, MessageCircle } from 'lucide-react-native';
-import { usePostIdStore } from '../zustand/usePostIdStore';
-import { getPostById } from '../services/posts';
-import PostulationButton from '../components/PostulationButton';
-import { useFeed } from '../hooks/useFeed';
+import React, { useEffect, useState } from 'react'
+import { useLocalSearchParams, Link } from 'expo-router'
+import { View, Text, SafeAreaView, ScrollView, TextInput, TouchableOpacity, StatusBar } from 'react-native'
+import { X, User, Calendar, Tag, MessageCircle, Star } from 'lucide-react-native'
+import { usePostIdStore } from '../zustand/usePostIdStore'
+import { getPostById } from '../services/posts'
+import PostulationButton from '../components/PostulationButton'
+import { useFeed } from '../hooks/useFeed'
+import { useReview } from '../hooks/useReview'
+import BackButton from '../components/BackButton'
+import { useAuthStore } from '../zustand/useAuthStore'
 
-export default function Post() {
-  const { postId } = useLocalSearchParams<{ postId: string }>();
-  const postById = usePostIdStore(state => state.post);
-  const setPostById = usePostIdStore(state => state.setPost);
-  const { handlePostulation } = useFeed();
-  const [comment, setComment] = useState('');
+export default function PostDetail() {
+  const { postId } = useLocalSearchParams<{ postId: string }>()
+  const postById = usePostIdStore(state => state.post)
+  const setPostById = usePostIdStore(state => state.setPost)
+  const { handlePostulation } = useFeed()
+  const [rating, setRating] = useState(0)
+  const { handleInputChange, reviewValues, handleSubmit } = useReview() 
+  const user = useAuthStore(state => state.user)
+
+  const isOwner = user?.user_id === postById?.user?.user_id
 
   useEffect(() => {
     const fetchPostById = async () => {
-      const data = await getPostById(Number(postId));
-      console.log(data);
-      setPostById(data);
-    };
+      const data = await getPostById(Number(postId))
+      setPostById(data)
+    }
 
-    fetchPostById();
-  }, []);
+    fetchPostById()
+  }, [])
+
+  const handleStarPress = (star: number) => {
+    setRating(star)
+    handleInputChange('calification', star.toString())
+  }
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
-      <StatusBar barStyle="dark-content" />
-      <View className="flex-1 bg-white">
-        <View className="flex-row items-center p-5 pt-[30px] border-b border-purple-100">
-          <Link href="/feed" className="p-2.5">
-            <X color="#6B46C1" size={24} />
-          </Link>
-          <Text className="text-purple-800 text-xl font-bold ml-5">Detalles del Post</Text>
+    <SafeAreaView className="flex-1 bg-gray-800">
+      <StatusBar barStyle="light-content" />
+      <View className="flex-1 bg-gray-800">
+        <View className="flex-row items-center p-5 bg-gray-900">
+          <BackButton
+            href='/feed'
+          />
+          <Text className="text-white text-xl font-bold ml-5">Detalles del Post</Text>
         </View>
 
         <ScrollView className="flex-grow p-5">
-          <View className="bg-white rounded-[15px] shadow-sm flex-1 justify-between border border-purple-100">
-            <View className="p-5 flex-[0.6]">
-              <View className="flex-row justify-between items-center mb-2.5">
-                <Text className="text-2xl font-bold text-gray-900 flex-1">{postById?.title}</Text>
-                <View className="flex-row items-center bg-purple-50 px-2.5 py-1.5 rounded-[15px]">
-                  <Tag color="#6B46C1" size={24} />
-                  <Text className="ml-1.5 text-purple-800 text-sm font-bold">{postById?.type}</Text>
+          <View className="bg-white rounded-xl shadow-md">
+            <View className="p-5">
+              <View className="flex-row justify-between items-center mb-2">
+                <Text className="text-2xl font-bold text-gray-800 flex-1">{postById?.title}</Text>
+                <View className="flex-row items-center bg-gray-100 px-3 py-1 rounded-full">
+                  <Tag color="#4A5568" size={16} />
+                  <Text className="ml-1 text-sm font-bold text-gray-600">{postById?.type}</Text>
                 </View>
               </View>
-              <Text className="text-base text-gray-700 mb-5">{postById?.description}</Text>
+              <Text className="text-base text-gray-600 mb-5">{postById?.description}</Text>
 
-              <View className="h-px bg-purple-100 my-5" />
+              <View className="h-px bg-gray-200 my-5" />
 
-              <View className="mt-1.5">
-                <View className="flex-row items-center mb-3.5">
-                  <User color="#6B46C1" size={30} />
-                  <Text className="ml-2.5 text-gray-700 text-base">{postById?.user?.fullname}</Text>
+              <View className="mt-1">
+                <View className="flex-row items-center mb-3">
+                  <User color="#4A5568" size={20} />
+                  <Text className="ml-2 text-gray-600 flex-1">{postById?.user?.fullname}</Text>
+                  <Link 
+                    href={`/review/${postById?.user?.user_id}`} 
+                    className="bg-indigo-500 px-4 py-2 rounded-full"
+                  >
+                    <Text className="text-white text-sm font-bold">Ver Reseñas del usuario</Text>
+                  </Link>
                 </View>
-                <View className="flex-row items-center mb-3.5">
-                  <Calendar color="#6B46C1" size={30} />
-                  <Text className="ml-2.5 text-gray-700 text-base">{postById?.status}</Text>
+                <View className="flex-row items-center">
+                  <Calendar color="#4A5568" size={20} />
+                  <Text className="ml-2 text-gray-600">{postById?.status}</Text>
                 </View>
               </View>
-            </View>
-
-            <View className="p-5 border-t border-purple-100 mt-auto">
-              <PostulationButton
-                applications={postById?.postulation_count || 0}
-                maxPostulations={postById?.maxPostulations || 0}
-                post_id={postById?.post_id || 0}
-                handlePostulation={handlePostulation}
-              />
             </View>
           </View>
         </ScrollView>
 
-        <View className="p-5 bg-white border-t border-purple-100">
-          <View className="flex-row items-center bg-purple-50 rounded-[25px] px-3.5 mb-2.5">
-            <MessageCircle color="#6B46C1" size={20} className="mr-2.5" />
-            <TextInput
-              className="flex-1 h-[50px] text-base text-gray-700"
-              placeholder="Escribe una reseña del servicio"
-              placeholderTextColor="#A0AEC0"
-              value={comment}
-              onChangeText={setComment}
-            />
+        {!isOwner && (
+          <View className="p-5 bg-gray-900 rounded-t-3xl">
+            <View className="flex-row items-center bg-gray-800 rounded-full px-4 mb-2">
+              <MessageCircle color="#A0AEC0" size={20} />
+              <TextInput
+                className="flex-1 h-12 text-base text-white ml-2"
+                placeholder="Escribe una reseña del servicio"
+                placeholderTextColor="#A0AEC0"
+                value={reviewValues.comment}
+                onChangeText={value => handleInputChange('comment', value)}
+              />
+            </View>
+            <View className="flex-row justify-center my-2">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <TouchableOpacity key={star} onPress={() => handleStarPress(star)}>
+                  <Star
+                    size={24}
+                    color={star <= rating ? '#F6E05E' : '#A0AEC0'}
+                    fill={star <= rating ? '#F6E05E' : 'none'}
+                  />
+                </TouchableOpacity>
+              ))}
+            </View>
+            <TouchableOpacity
+              className="bg-blue-500 rounded-full py-3 items-center"
+              onPress={handleSubmit}
+            >
+              <Text className="text-white text-base font-bold">Enviar Reseña</Text>
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            className="bg-purple-600 rounded-[25px] py-3 items-center"
-            onPress={() => console.log("Comentario:", comment)}
-          >
-            <Text className="text-white text-base font-bold">Enviar</Text>
-          </TouchableOpacity>
-        </View>
+        )}
+
+        {isOwner && (
+          <View className="p-5 bg-gray-900 rounded-t-3xl">
+            <Text className="text-white text-lg font-bold">No puedes dejar una reseña sobre tu propio post.</Text>
+          </View>
+        )}
       </View>
     </SafeAreaView>
-  );
+  )
 }
