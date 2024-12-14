@@ -12,6 +12,8 @@ export interface User extends DraftUser {
     status: string
 }
 
+
+
 type PostType = "OFFER" | "REQUEST"
 
 export interface DraftPost {
@@ -86,6 +88,7 @@ export interface Device {
   deviceVersion: string
 }
 
-
-
-  
+export interface UpdateUser {
+  phone?: string;
+  password?: string;
+}
