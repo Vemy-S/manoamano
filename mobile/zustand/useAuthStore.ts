@@ -4,6 +4,7 @@ import type { User } from "../types";
 type useAuthStore = {
     user: User
     setUser: (user: User) => void
+    externalLogout: () => void
 }
 
 export const useAuthStore = create<useAuthStore>((set)=> ({
@@ -13,9 +14,23 @@ export const useAuthStore = create<useAuthStore>((set)=> ({
         email: '',
         password: '',
         phone: '',
-        photo: ''
+        photo: '',
+        status: '',
+        device_id: null
     },
-    setUser: (user) => set({user})
+    setUser: (user) => set({user}),
+    externalLogout: () => set({
+        user: {
+            user_id: null,
+            fullname: '',
+            email: '',
+            password: '',
+            phone: '',
+            photo: '',
+            status: '',
+            device_id: null
+        }
+    })
 }))
 
 

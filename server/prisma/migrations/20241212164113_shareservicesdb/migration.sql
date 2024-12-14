@@ -1,15 +1,3 @@
-/*
-  Warnings:
-
-  - You are about to drop the `Favorite` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Message` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Notification` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Post` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Postulation` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Review` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `User` table. If the table is not empty, all the data it contains will be lost.
-
-*/
 -- CreateEnum
 CREATE TYPE "Rol" AS ENUM ('USUARIO', 'ADMINISTRADOR');
 
@@ -25,75 +13,6 @@ CREATE TYPE "EstadoUsuario" AS ENUM ('ACTIVO', 'INACTIVO', 'BANEADO');
 -- CreateEnum
 CREATE TYPE "EstadoPostulacion" AS ENUM ('PENDIENTE', 'ACEPTADA', 'RECHAZADA', 'EN_PROGRESO', 'COMPLETADA');
 
--- DropForeignKey
-ALTER TABLE "Favorite" DROP CONSTRAINT "Favorite_post_id_fkey";
-
--- DropForeignKey
-ALTER TABLE "Favorite" DROP CONSTRAINT "Favorite_user_id_fkey";
-
--- DropForeignKey
-ALTER TABLE "Message" DROP CONSTRAINT "Message_receiverId_fkey";
-
--- DropForeignKey
-ALTER TABLE "Message" DROP CONSTRAINT "Message_senderId_fkey";
-
--- DropForeignKey
-ALTER TABLE "Notification" DROP CONSTRAINT "Notification_user_id_fkey";
-
--- DropForeignKey
-ALTER TABLE "Post" DROP CONSTRAINT "Post_user_id_fkey";
-
--- DropForeignKey
-ALTER TABLE "Postulation" DROP CONSTRAINT "Postulation_post_id_fkey";
-
--- DropForeignKey
-ALTER TABLE "Postulation" DROP CONSTRAINT "Postulation_user_id_fkey";
-
--- DropForeignKey
-ALTER TABLE "Review" DROP CONSTRAINT "Review_post_id_fkey";
-
--- DropForeignKey
-ALTER TABLE "Review" DROP CONSTRAINT "Review_user_id_fkey";
-
--- DropTable
-DROP TABLE "Favorite";
-
--- DropTable
-DROP TABLE "Message";
-
--- DropTable
-DROP TABLE "Notification";
-
--- DropTable
-DROP TABLE "Post";
-
--- DropTable
-DROP TABLE "Postulation";
-
--- DropTable
-DROP TABLE "Review";
-
--- DropTable
-DROP TABLE "User";
-
--- DropEnum
-DROP TYPE "PostStatus";
-
--- DropEnum
-DROP TYPE "PostType";
-
--- DropEnum
-DROP TYPE "PostulationStatus";
-
--- DropEnum
-DROP TYPE "Role";
-
--- DropEnum
-DROP TYPE "UserStatus";
-
--- DropEnum
-DROP TYPE "test";
-
 -- CreateTable
 CREATE TABLE "Usuario" (
     "usuario_id" SERIAL NOT NULL,
@@ -107,8 +26,24 @@ CREATE TABLE "Usuario" (
     "fechaCreacion" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "fechaActualizacion" TIMESTAMP(3) NOT NULL,
     "ultimoInicio" TIMESTAMP(3),
+    "publicacionesActivas" INTEGER NOT NULL DEFAULT 0,
+    "postulacionesActivas" INTEGER NOT NULL DEFAULT 0,
 
     CONSTRAINT "Usuario_pkey" PRIMARY KEY ("usuario_id")
+);
+
+-- CreateTable
+CREATE TABLE "Dispositivo" (
+    "dispositivo_id" SERIAL NOT NULL,
+    "usuario_id" INTEGER NOT NULL,
+    "identificador_dispositivo" TEXT NOT NULL,
+    "plataforma" TEXT NOT NULL,
+    "tipo_dispositivo" TEXT NOT NULL DEFAULT 'UNKNOWN',
+    "version_dispositivo" TEXT NOT NULL DEFAULT '1.0.0',
+    "fechaCreacion" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "token_dispositivo" TEXT NOT NULL DEFAULT '',
+
+    CONSTRAINT "Dispositivo_pkey" PRIMARY KEY ("dispositivo_id")
 );
 
 -- CreateTable
@@ -191,7 +126,13 @@ CREATE TABLE "Mensaje" (
 CREATE UNIQUE INDEX "Usuario_correo_key" ON "Usuario"("correo");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Dispositivo_token_dispositivo_key" ON "Dispositivo"("token_dispositivo");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Favorito_usuario_id_publicacion_id_key" ON "Favorito"("usuario_id", "publicacion_id");
+
+-- AddForeignKey
+ALTER TABLE "Dispositivo" ADD CONSTRAINT "Dispositivo_usuario_id_fkey" FOREIGN KEY ("usuario_id") REFERENCES "Usuario"("usuario_id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Publicacion" ADD CONSTRAINT "Publicacion_usuario_id_fkey" FOREIGN KEY ("usuario_id") REFERENCES "Usuario"("usuario_id") ON DELETE RESTRICT ON UPDATE CASCADE;

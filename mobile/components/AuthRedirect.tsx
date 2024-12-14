@@ -14,7 +14,7 @@ export default function AuthRedirect({message, href, linkText}: AuthRedirectProp
             {message}{' '}
         </Text>  
         <Link href={href}>
-            <Text className="text-amber-500 font-semibold">
+            <Text className="text-indigo-500 font-semibold">
                 {linkText}
             </Text>
         </Link>

@@ -10,7 +10,7 @@ const slides = [
   {
     id: 1,
     title: "Encuentra tu servicio ideal",
-    description: "Busca y ofrece miles de servicios y encuentra la persona que te acomode en ese momento",
+    description: "Busca y ofrece miles de servicios y encuentra lo que necesitas",
     image: logoImage
   },
   {
@@ -76,7 +76,7 @@ export default function GetStarted() {
             </View>
 
             <View className="mt-20">
-              <Text className="text-3xl font-bold mb-4 px-4 text-amber-500">
+              <Text className="text-3xl font-bold mb-4 px-4 text-indigo-500">
                 {slide.title}
               </Text>
               <Text className="text-gray-500 text-lg mb-8 px-4 leading-relaxed">
@@ -95,7 +95,7 @@ export default function GetStarted() {
                 key={idx}
                 className={`h-2 rounded-full ${
                   idx === activeSlide 
-                    ? 'w-6 bg-amber-500' 
+                    ? 'w-6 bg-indigo-500' 
                     : 'w-2 bg-gray-200'
                 }`}
               />
@@ -104,7 +104,7 @@ export default function GetStarted() {
 
           {activeSlide === slides.length - 1 ? (
             <TouchableOpacity 
-              className="bg-amber-500 rounded-full px-6 py-3"
+              className="bg-indigo-500 rounded-full px-6 py-3"
               onPress={goTo}
             >
               <Text className="text-white font-semibold text-base">
@@ -113,7 +113,7 @@ export default function GetStarted() {
             </TouchableOpacity>
           ) : (
             <TouchableOpacity 
-              className="bg-amber-500 rounded-full w-12 h-12 items-center justify-center"
+              className="bg-indigo-500 rounded-full w-12 h-12 items-center justify-center"
               onPress={handleNext}
             >
               <ChevronRight size={24} color="white" />

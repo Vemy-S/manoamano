@@ -3,9 +3,11 @@ import type { DraftPost, Post } from '../types';
 
 export const createPost = async (postData: DraftPost) => {
   try {
-      console.log(postData)
       const response = await api.post('/post/create', postData, {
-          withCredentials: true
+          withCredentials: true,
+          validateStatus: (status) => {
+            return status < 500
+          }
       })
       console.log(response)
       return response.data
@@ -46,7 +48,6 @@ export const postulation = async (id: Post['post_id']) => {
               return status < 500
           }
       })
-
       return {
           status: response.status,
           data: response.data
@@ -61,6 +62,32 @@ export const getUserPostulations = async () => {
     const response = await api.get('/post/getpostulations')
     
     return response.data
+  } catch (error) {
+    throw error
+  }
+}
+
+export const removePostulation = async (id: Post['post_id']) => {
+  try {
+    const response = await api.delete(`/post/postulation/${id}`, {
+      withCredentials: true
+    })
+
+    return response.data
+  } catch (error) {
+    throw error
+  }
+}
+
+export const deletePost = async (id: Post['post_id']) => {
+  try {
+    const response = await api.delete(`/post/delete/${id}`, {
+      withCredentials: true,
+    })
+
+    return {
+      status: response.status
+    }
   } catch (error) {
     throw error
   }

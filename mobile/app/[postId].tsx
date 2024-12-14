@@ -1,234 +1,123 @@
-import React, { useEffect, useState } from 'react';
-import { useLocalSearchParams, Link } from 'expo-router';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, TextInput, TouchableOpacity, StatusBar } from 'react-native';
-import { X, User, Calendar, Tag, MessageCircle } from 'lucide-react-native';
-import { usePostIdStore } from '../zustand/usePostIdStore';
-import { getPostById } from '../services/posts';
-import PostulationButton from '../components/PostulationButton';
-import { useFeed } from '../hooks/useFeed';
+import React, { useEffect, useState } from 'react'
+import { useLocalSearchParams, Link } from 'expo-router'
+import { View, Text, SafeAreaView, ScrollView, TextInput, TouchableOpacity, StatusBar } from 'react-native'
+import { X, User, Calendar, Tag, MessageCircle, Star } from 'lucide-react-native'
+import { usePostIdStore } from '../zustand/usePostIdStore'
+import { getPostById } from '../services/posts'
+import PostulationButton from '../components/PostulationButton'
+import { useFeed } from '../hooks/useFeed'
+import { useReview } from '../hooks/useReview'
+import BackButton from '../components/BackButton'
+import { useAuthStore } from '../zustand/useAuthStore'
 
-export default function Post() {
-  const { postId } = useLocalSearchParams<{ postId: string }>();
-  const postById = usePostIdStore(state => state.post);
-  const setPostById = usePostIdStore(state => state.setPost);
-  const { handlePostulation } = useFeed();
-  const [comment, setComment] = useState('');
+export default function PostDetail() {
+  const { postId } = useLocalSearchParams<{ postId: string }>()
+  const postById = usePostIdStore(state => state.post)
+  const setPostById = usePostIdStore(state => state.setPost)
+  const { handlePostulation } = useFeed()
+  const [rating, setRating] = useState(0)
+  const { handleInputChange, reviewValues, handleSubmit } = useReview() 
+  const user = useAuthStore(state => state.user)
+
+  const isOwner = user?.user_id === postById?.user?.user_id
 
   useEffect(() => {
     const fetchPostById = async () => {
-      const data = await getPostById(Number(postId));
-      console.log(data);
-      setPostById(data);
-    };
+      const data = await getPostById(Number(postId))
+      setPostById(data)
+    }
 
-    fetchPostById();
-  }, []);
+    fetchPostById()
+  }, [])
+
+  const handleStarPress = (star: number) => {
+    setRating(star)
+    handleInputChange('calification', star.toString())
+  }
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView className="flex-1 bg-gray-800">
       <StatusBar barStyle="light-content" />
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Link href="/feed" style={styles.backButton}>
-            <X color="#fff" size={24} />
-          </Link>
-          <Text style={styles.headerTitle}>Detalles del Post</Text>
+      <View className="flex-1 bg-gray-800">
+        <View className="flex-row items-center p-5 bg-gray-900">
+          <BackButton
+            href='/feed'
+          />
+          <Text className="text-white text-xl font-bold ml-5">Detalles del Post</Text>
         </View>
 
-        <ScrollView contentContainerStyle={styles.scrollViewContent}>
-          <View style={styles.card}>
-            <View style={styles.cardContent}>
-              <View style={styles.titleContainer}>
-                <Text style={styles.title}>{postById?.title}</Text>
-                <View style={styles.typeContainer}>
-                  <Tag color="#4A5568" size={24} />
-                  <Text style={styles.typeText}>{postById?.type}</Text>
+        <ScrollView className="flex-grow p-5">
+          <View className="bg-white rounded-xl shadow-md">
+            <View className="p-5">
+              <View className="flex-row justify-between items-center mb-2">
+                <Text className="text-2xl font-bold text-gray-800 flex-1">{postById?.title}</Text>
+                <View className="flex-row items-center bg-gray-100 px-3 py-1 rounded-full">
+                  <Tag color="#4A5568" size={16} />
+                  <Text className="ml-1 text-sm font-bold text-gray-600">{postById?.type}</Text>
                 </View>
               </View>
-              <Text style={styles.description}>{postById?.description}</Text>
+              <Text className="text-base text-gray-600 mb-5">{postById?.description}</Text>
 
-              <View style={styles.separator} />
+              <View className="h-px bg-gray-200 my-5" />
 
-              <View style={styles.infoContainer}>
-                <View style={styles.infoItem}>
-                  <User color="#4A5568" size={30} />
-                  <Text style={styles.infoText}>{postById?.user?.fullname}</Text>
+              <View className="mt-1">
+                <View className="flex-row items-center mb-3">
+                  <User color="#4A5568" size={20} />
+                  <Text className="ml-2 text-gray-600 flex-1">{postById?.user?.fullname}</Text>
+                  <Link 
+                    href={`/review/${postById?.user?.user_id}`} 
+                    className="bg-indigo-500 px-4 py-2 rounded-full"
+                  >
+                    <Text className="text-white text-sm font-bold">Ver Reseñas del usuario</Text>
+                  </Link>
                 </View>
-                <View style={styles.infoItem}>
-                  <Calendar color="#4A5568" size={30} />
-                  <Text style={styles.infoText}>{postById?.status}</Text>
+                <View className="flex-row items-center">
+                  <Calendar color="#4A5568" size={20} />
+                  <Text className="ml-2 text-gray-600">{postById?.status}</Text>
                 </View>
               </View>
-            </View>
-
-            <View style={styles.postulationButtonContainer}>
-              <PostulationButton
-                applications={postById?.postulation_count || 0}
-                maxPostulations={postById?.maxPostulations || 0}
-                post_id={postById?.post_id || 0}
-                handlePostulation={handlePostulation}
-              />
             </View>
           </View>
         </ScrollView>
 
-        <View style={styles.commentSection}>
-          <View style={styles.commentInputContainer}>
-            <MessageCircle color="#4A5568" size={20} style={styles.commentIcon} />
-            <TextInput
-              style={styles.commentInput}
-              placeholder="Escribe una reseña del servicio"
-              placeholderTextColor="#A0AEC0"
-              value={comment}
-              onChangeText={setComment}
-            />
+        {!isOwner && (
+          <View className="p-5 bg-gray-900 rounded-t-3xl">
+            <View className="flex-row items-center bg-gray-800 rounded-full px-4 mb-2">
+              <MessageCircle color="#A0AEC0" size={20} />
+              <TextInput
+                className="flex-1 h-12 text-base text-white ml-2"
+                placeholder="Escribe una reseña del servicio"
+                placeholderTextColor="#A0AEC0"
+                value={reviewValues.comment}
+                onChangeText={value => handleInputChange('comment', value)}
+              />
+            </View>
+            <View className="flex-row justify-center my-2">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <TouchableOpacity key={star} onPress={() => handleStarPress(star)}>
+                  <Star
+                    size={24}
+                    color={star <= rating ? '#F6E05E' : '#A0AEC0'}
+                    fill={star <= rating ? '#F6E05E' : 'none'}
+                  />
+                </TouchableOpacity>
+              ))}
+            </View>
+            <TouchableOpacity
+              className="bg-blue-500 rounded-full py-3 items-center"
+              onPress={handleSubmit}
+            >
+              <Text className="text-white text-base font-bold">Enviar Reseña</Text>
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            style={styles.sendButton}
-            onPress={() => console.log("Comentario:", comment)}
-          >
-            <Text style={styles.sendButtonText}>Enviar</Text>
-          </TouchableOpacity>
-        </View>
+        )}
+
+        {isOwner && (
+          <View className="p-5 bg-gray-900 rounded-t-3xl">
+            <Text className="text-white text-lg font-bold">No puedes dejar una reseña sobre tu propio post.</Text>
+          </View>
+        )}
       </View>
     </SafeAreaView>
-  );
+  )
 }
-
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#2D3748',
-  },
-  container: {
-    flex: 1,
-    backgroundColor: '#2D3748',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 20,
-    paddingTop: StatusBar.currentHeight || 0,
-    backgroundColor: '#1A202C',
-  },
-  backButton: {
-    padding: 10,
-  },
-  headerTitle: {
-    color: '#fff',
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginLeft: 20,
-  },
-  scrollViewContent: {
-    flexGrow: 1,
-    padding: 20,
-  },
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 15,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-    flex: 1,
-    justifyContent: 'space-between',
-  },
-  cardContent: {
-    padding: 20,
-    flex: 0.6,
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#2D3748',
-    flex: 1,
-  },
-  description: {
-    fontSize: 16,
-    color: '#4A5568',
-    marginBottom: 20,
-  },
-  separator: {
-    height: 1,
-    backgroundColor: '#E2E8F0',
-    marginVertical: 20,
-  },
-  infoContainer: {
-    marginTop: 5,
-  },
-  infoItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 15,
-  },
-  infoText: {
-    marginLeft: 10,
-    color: '#4A5568',
-    fontSize: 16,
-  },
-  postulationButtonContainer: {
-    padding: 20,
-    borderTopWidth: 1,
-    borderTopColor: '#E2E8F0',
-    marginTop: 'auto',
-  },
-  commentSection: {
-    padding: 20,
-    backgroundColor: '#1A202C',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-  },
-  commentInputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#2D3748',
-    borderRadius: 25,
-    paddingHorizontal: 15,
-    marginBottom: 10,
-  },
-  commentIcon: {
-    marginRight: 10,
-  },
-  commentInput: {
-    flex: 1,
-    height: 50,
-    fontSize: 16,
-    color: '#fff',
-  },
-  sendButton: {
-    backgroundColor: '#4299E1',
-    borderRadius: 25,
-    paddingVertical: 12,
-    alignItems: 'center',
-  },
-  sendButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  typeContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#EDF2F7',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 15,
-  },
-  typeText: {
-    marginLeft: 5,
-    color: '#4A5568',
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-});

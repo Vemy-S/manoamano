@@ -6,17 +6,19 @@ import BackButton from '../components/BackButton'
 import AuthRedirect from '../components/AuthRedirect'
 import PrimaryButton from '../components/PrimaryButton'
 import AuthImage from '../components/AuthImage'
+import { useState } from 'react'
 
 export default function RegistrationScreen() {
   
   const { 
-    handleSubmit,
-    handleInputChange,
     formValues, 
     showPassword,
+    error,
+    responseMessage,
+    handleSubmit,
+    handleInputChange,
     setShowPassword
   } = useRegister()
-
 
 
   return (
@@ -28,7 +30,7 @@ export default function RegistrationScreen() {
     
       <View className="px-6 pt-4">
 
-        <Text className='text-center text-4xl tracking-[4px] text-amber-900'>Mano a Mano</Text>
+        <Text className='text-center text-4xl tracking-[4px] text-indigo-900'>Share Services</Text>
         
         <AuthImage/>
 
@@ -48,11 +50,11 @@ export default function RegistrationScreen() {
             value={formValues.email}
             onChangeText={value => handleInputChange('email', value)}
           />
-
+          
           <TextInput
             className="bg-gray-50 rounded-xl px-4 py-3 text-gray-900"
             placeholder="Teléfono"
-            keyboardType="phone-pad"
+            keyboardType="number-pad"
             value={formValues.phone}
             onChangeText={(value) => handleInputChange('phone', value) }
           />
@@ -75,7 +77,8 @@ export default function RegistrationScreen() {
                 <Eye size={20} color="#666" />
               )}
             </TouchableOpacity>
-
+            <Text className='text-red-400 p-2'>{error}</Text>
+            <Text className='text-red-400 pl-2'>{responseMessage}</Text>
           </View>
 
         </View>

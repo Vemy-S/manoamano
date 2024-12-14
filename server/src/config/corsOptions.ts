@@ -15,7 +15,7 @@ import { CorsOptions } from "cors";
 } */
 
 const corsOptions = {
-    origin: 'http://localhost:8081', 
+    origin: 'http://localhost:8081',
     credentials: true
 }
 

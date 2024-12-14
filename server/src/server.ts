@@ -8,7 +8,11 @@ import cors from 'cors'
 import corsOptions from './config/corsOptions'
 import postRoutes from './routes/postRoutes'
 import reviewRoutes from './routes/reviewRoutes'
+
 import profileRoutes from './routes/profileRoutes'
+import deviceRoutes from './routes/deviceRoutes'
+import rutasdeautenticacion from './routes/authRoutes'
+
 
 const app = express()
 
@@ -25,6 +29,8 @@ app.use('/api/auth', authRoutes)
 app.use('/api/user', userRoutes)
 app.use('/api/post', postRoutes)
 app.use('/api/review', reviewRoutes)
+app.use('/api/device', deviceRoutes)
+app.use('/api/autenticacion', rutasdeautenticacion )
 
 //api profile
 app.use('/api/profile', profileRoutes)
