@@ -27,7 +27,7 @@ export default function HeaderFeed() {
         Hola, {user.fullname}
       </Text>
       <Text className="text-xl text-[#8B5CF6] mt-1">
-        Hay {newPosts} nuevas publicaciones hoy en tu inicio o puede ir chamuyo
+        Hay {newPosts} nuevas publicaciones en tu inicio.
       </Text>
     </View>
 

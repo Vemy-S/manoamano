@@ -31,7 +31,7 @@ export const useReview = () => {
         console.log('probando', result)
 
         if(result.status === 201){
-            Alert.alert('Has creado una resenia extiosa')
+            Alert.alert('Has creado una reseña extiosa')
         }
         
     }
