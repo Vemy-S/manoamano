@@ -21,6 +21,10 @@ export default function Profile() {
     router.push('/DevicesScreen')
   }
 
+  const handleEdit = async () => {
+    router.push('/editProfile')
+  }
+
   return (
     <SafeAreaView className="flex-1 bg-white">
       <ScrollView className="flex-1">
@@ -58,10 +62,20 @@ export default function Profile() {
 
 
         <View className="px-4">
-          <MenuItem
+          {/* <MenuItem
             icon={<User2 color="#8B5CF6" size={20} />}
             title="Cuenta"
-          />
+          /> */}
+
+
+              <TouchableOpacity
+            onPress={handleEdit}
+            className="flex-row items-center py-4 border-t border-gray-200"
+          >
+            <User2 color="#8B5CF6" size={20} />
+            <Text className="text-gray-900 ml-3 flex-1">Editar perfil</Text>
+            <ChevronRight color="#8B5CF6" size={20} />
+          </TouchableOpacity>
           <MenuItem
             icon={<Newspaper color="#8B5CF6" size={20} />}
             title="Mis publicaciones"

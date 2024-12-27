@@ -10,6 +10,7 @@ import postRoutes from './routes/postRoutes'
 import reviewRoutes from './routes/reviewRoutes'
 import deviceRoutes from './routes/deviceRoutes'
 import rutasdeautenticacion from './routes/authRoutes'
+import editProfileRoutes from './routes/editProfileRoutes'
 
 const app = express()
 
