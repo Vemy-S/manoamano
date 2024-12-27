@@ -3,10 +3,12 @@ import { useState, useEffect, useCallback } from "react"
 import { postulation } from "../services/posts"
 import { Alert } from "react-native"
 import { Post } from "../types"
+import { useRouter } from "expo-router";
 
 export const useFeed = () => {
     const setPost = usePostStore(state => state.setPosts)
     const getUserPostulations = usePostStore(state => state.getUserPostulations)
+    const router = useRouter()
 
     const [refreshing, setRefreshing] = useState(false)
 
@@ -33,6 +35,7 @@ export const useFeed = () => {
             if (response.status === 200) {
                 Alert.alert('Postulación realizada')
                 onRefresh()
+                router.push('/ChatScreen');
             } else if (response.data.error === 'User has already applied to this post') {
                 const errorMsg = 'Ya te has postulado en esta publicación'
                 Alert.alert('Error', errorMsg)
@@ -54,5 +57,5 @@ export const useFeed = () => {
         fetchPost,
         setRefreshing,
         handlePostulation
-    };
+    };
 };
